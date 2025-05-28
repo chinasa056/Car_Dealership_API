@@ -1,12 +1,15 @@
 import mongoose from 'mongoose';
-const db = process.env.MONGODB_URI;
+import setting from './application';
+const db = setting.mongodb_uri;
 
-mongoose.Promise = Promise;
+const dbConnect = async () => {
+    mongoose.connect(db)
+      .then(() => {
+        console.log('MongoDB connected successfully');
+      })
+      .catch((error: Error) => {
+        console.error('MongoDB connection error:', error);
+    });
+};
 
-mongoose.connect(db)
-  .then(() => {
-    console.log('MongoDB connected successfully');
-  })
-  .catch((error: Error) => {
-    console.error('MongoDB connection error:', error);
-});
+export default dbConnect;

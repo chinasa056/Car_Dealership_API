@@ -1,23 +1,28 @@
-require('dotenv').config()
-require('./core/config/database')
-import express from 'express';
-import cors from 'cors';
-import bodyParser from 'body-parser';
-import http from 'http';
-import compression from 'compression'
+import dotenv from "dotenv";
+dotenv.config();
+import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
+import compression from "compression";
+import setting from "./core/config/application";
+import dbConnect from "./core/config/database";
 
 const app = express();
-const port = process.env.APP_PORT
+const port = setting.port;
 
-const server = http.createServer(app);
-app.use(cors({
-    credentials: true
-}));
+app.use(
+  cors({
+    credentials: true,
+  })
+);
 
 app.use(compression());
 app.use(bodyParser.json());
 
-server.listen(port, () => {
+const startServer = async () => {
+  await dbConnect();
+  app.listen(port, () => {
     console.log(`server is listening on port: ${port}`);
-    
-})
+  });
+};
+startServer();
