@@ -9,6 +9,17 @@ export interface ICustomer extends Document {
 };
 
 export interface RegisterCustomerResponse {
-    message: string;
-    data: any;
+  message: string;
+  data: any;
+};
+
+export interface CustomerLoginRequest {
+  email: string;
+  password: string;
+};
+
+export interface LoginCustomerResponse {
+  name: any;
+  email: string;
+  token: string
 };
