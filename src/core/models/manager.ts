@@ -1,12 +1,6 @@
 // src/models/Manager.ts
-import { Schema, model, Document } from 'mongoose';
-
-export interface IManager extends Document {
-  name: string;
-  email: string;
-  password: string;
-  role: 'admin' | 'manager';
-}
+import { Schema, model } from 'mongoose';
+import { IManager } from '../interfaces/manager';
 
 const managerSchema = new Schema<IManager>({
   name: { type: String, required: true },

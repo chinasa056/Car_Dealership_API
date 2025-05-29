@@ -23,3 +23,4 @@ export const processCustomerRegistration = async (
 
   return { message: "Customer registration successful", data: newCustomer };
 };
+

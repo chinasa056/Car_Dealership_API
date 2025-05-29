@@ -1,14 +1,6 @@
 // src/models/Car.ts
-import { Schema, model, Document, Types } from 'mongoose';
-
-export interface ICar extends Document {
-    brand: string;
-    carModel: string;
-    price: number;
-    year: number;
-    available: boolean;
-    category: Types.ObjectId;
-}
+import { Schema, model } from 'mongoose';
+import { ICar } from '../interfaces/car';
 
 const carSchema = new Schema<ICar>({
     brand: { type: String, required: true },
