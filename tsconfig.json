@@ -31,7 +31,6 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
 
-    // ✅ Add these two lines:
     "baseUrl": "./src",
     "paths": {
       "src/*": ["./*"]

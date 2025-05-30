@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { processCustomerLogin, processCustomerRegistration } from "src/core/controllers/customer"
+import { processCustomerLogin, processCustomerRegistration } from "src/core/controllers/customer";
 import { responseHandler } from "src/core/helpers/utilities";
 
 export const createCustomer: RequestHandler = async (req, res, next) => {

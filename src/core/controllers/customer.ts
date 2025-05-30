@@ -1,4 +1,7 @@
 import setting from "../config/application";
+import { ErrorCode } from "../enum/error";
+import { HttpStatus } from "../enum/httpCode";
+import { CustomError } from "../error/CustomError";
 import { CustomerLoginRequest, ICustomer, RegisterCustomerResponse, LoginCustomerResponse } from "../interfaces/customer";
 import { Customer } from "../models/customer";
 import bcrypt from 'bcrypt';
@@ -10,7 +13,7 @@ export const processCustomerRegistration = async (
   const customerExist = await Customer.findOne({ email: body.email });
 
   if (customerExist) {
-    throw new Error("User with this email already exist");
+    throw new CustomError("User with this email already exist", ErrorCode.CONFLICT, HttpStatus.CONFLICT);
   };
 
   const saltPassword = bcrypt.genSaltSync(10);
@@ -30,17 +33,17 @@ export const processCustomerLogin = async (body: CustomerLoginRequest): Promise<
   const customer = await Customer.findOne({ email: body.email });
 
   if (!customer) {
-    throw new Error('Email or password incorrect');
+    throw new CustomError('Email or password incorrect', ErrorCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
   };
 
   const customerPassword: string = customer.password;
   const isPassword = await bcrypt.compare(body.password, customerPassword);
 
   if (!isPassword) {
-    throw new Error('Wrong password');
+    throw new CustomError('Wrong password', ErrorCode.CONFLICT, HttpStatus.CONFLICT);
   };
 
-  const token = jwt.sign({ userId: customer.id, email: customer.email }, setting.secret, { expiresIn: '1day' });
+  const token = jwt.sign({ userId: customer.id, email: customer.email }, setting.jwt.secret, { expiresIn: '1day' });
 
   console.log('login successful');
 

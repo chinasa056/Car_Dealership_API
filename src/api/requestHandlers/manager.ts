@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
-import { processManagerLogin, processManagerRegistratin } from "src/core/controllers/manager";
-import { responseHandler } from "src/core/helpers/utilities";
+import { processManagerLogin, processManagerRegistratin } from "core/controllers/manager";
+import { responseHandler } from "core/helpers/utilities";
 
 export const registerManager: RequestHandler = async (req, res, next) => {
     try {

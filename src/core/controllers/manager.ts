@@ -1,4 +1,7 @@
 import setting from "../config/application";
+import { ErrorCode } from "../enum/error";
+import { HttpStatus } from "../enum/httpCode";
+import { CustomError } from "../error/CustomError";
 import { IManager, ManagerLoginRequest, ManagerLoginResponse, RegisterManagerResponse } from "../interfaces/manager";
 import { Manager } from "../models/manager";
 import bcrypt from 'bcrypt'
@@ -9,7 +12,7 @@ export const processManagerRegistratin = async (body: IManager): Promise<Registe
     const manager = await Manager.findOne({ email: body.email });
 
     if (manager) {
-        throw new Error(`manager with email: ${body.email} already exist`)
+        throw new CustomError(`manager with email: ${body.email} already exist`, ErrorCode.CONFLICT, HttpStatus.CONFLICT)
     };
 
     const saltedRound = await bcrypt.genSalt(10);
@@ -30,17 +33,17 @@ export const processManagerLogin = async (body: ManagerLoginRequest): Promise<Ma
   const manager = await Manager.findOne({ email: body.email });
 
   if (!manager) {
-    throw new Error('Email or password incorrect');
+    throw new CustomError('Email or password incorrect', ErrorCode.CONFLICT, HttpStatus.CONFLICT);
   };
 
   const managerPassword: string = manager.password;
   const isPassword = await bcrypt.compare(body.password, managerPassword);
 
   if (!isPassword) {
-    throw new Error('Wrong password');
+    throw new CustomError('Wrong password', ErrorCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
   };
 
-  const token = jwt.sign({ userId: manager.id, email: manager.email, role: manager.role }, setting.secret, { expiresIn: '1day' });
+  const token = jwt.sign({ userId: manager.id, email: manager.email, role: manager.role }, setting.jwt.secret, { expiresIn: '1day' });
 
   console.log('login successful');
 
