@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { processManagerRegistratin } from "src/core/controllers/manager";
+import { processManagerLogin, processManagerRegistratin } from "src/core/controllers/manager";
 import { responseHandler } from "src/core/helpers/utilities";
 
 export const registerManager: RequestHandler = async (req, res, next) => {
@@ -11,4 +11,18 @@ export const registerManager: RequestHandler = async (req, res, next) => {
     } catch (error) {
         next(error)
     }
+};
+
+export const loginManager: RequestHandler = async (
+  req,
+  res,
+  next,
+) => {
+  try {
+    const response = await processManagerLogin(req.body);
+
+    res.json(responseHandler(response, 'Manager successfully loggedIn'));
+  } catch (error) {
+    next(error);
+  }
 };
