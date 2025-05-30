@@ -1,4 +1,3 @@
-// src/models/Customer.ts
 import { Schema, model } from 'mongoose';
 import { ICustomer } from '../interfaces/customer';
 

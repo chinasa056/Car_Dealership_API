@@ -1,4 +1,3 @@
-// src/models/Manager.ts
 import { Schema, model } from 'mongoose';
 import { IManager } from '../interfaces/manager';
 

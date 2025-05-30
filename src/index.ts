@@ -7,6 +7,7 @@ import compression from "compression";
 import setting from "./core/config/application";
 import dbConnect from "./core/config/database";
 import userRoutes from "./api/route/customer";
+import managerRoutes from "./api/route/manager";
 
 const app = express();
 const port = setting.port;
@@ -21,6 +22,8 @@ app.use(compression());
 app.use(express.json())
 // app.use(bodyParser.json());
 app.use("/api", userRoutes)
+app.use("/api", managerRoutes)
+
 
 
 
