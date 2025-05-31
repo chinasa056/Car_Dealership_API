@@ -9,5 +9,5 @@ export class CustomError extends Error {
     this.errorCode = errorCode;
 
     Object.setPrototypeOf(this, CustomError.prototype);
-  }
-}
+  };
+};

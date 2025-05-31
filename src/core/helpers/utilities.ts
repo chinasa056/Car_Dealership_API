@@ -9,11 +9,3 @@ export const responseHandler = (
     data: payload || {},
   };
 };
-
-// export const errorHandleError = (error: Error, res: Response, customMessage: string, httpCode: number) => {
-//     console.error(error); 
-//     res.status(httpCode).json({
-//         message: customMessage,
-//         data: error.message 
-//     });
-// };

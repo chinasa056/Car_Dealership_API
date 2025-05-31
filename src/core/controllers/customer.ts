@@ -43,7 +43,7 @@ export const processCustomerLogin = async (body: CustomerLoginRequest): Promise<
     throw new CustomError('Wrong password', ErrorCode.CONFLICT, HttpStatus.CONFLICT);
   };
 
-  const token = jwt.sign({ userId: customer.id, email: customer.email }, setting.jwt.secret, { expiresIn: '1day' });
+  const token = jwt.sign({ userId: customer._id, email: customer.email }, setting.jwt.secret, { expiresIn: '1day' });
 
   console.log('login successful');
 

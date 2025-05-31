@@ -38,14 +38,14 @@ export const errorHandler = (
     });
   };
 
-  if (error instanceof MongooseError.CastError) {
-    return res.status(400).send({
-      status: false,
-      error: 'bad_request',
-      message: `Invalid value for ${error.path}: ${error.value}`,
-      data: {}
-    });
-  };
+  // if (error instanceof MongooseError.CastError) {
+  //   return res.status(400).send({
+  //     status: false,
+  //     error: 'bad_request',
+  //     message: `Invalid value for ${error.path}: ${error.value}`,
+  //     data: {}
+  //   });
+  // };
 
   if ((error as any).code === 11000) {
     const field = Object.keys((error as any).keyValue)[0];

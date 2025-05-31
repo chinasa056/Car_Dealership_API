@@ -43,7 +43,17 @@ export const processManagerLogin = async (body: ManagerLoginRequest): Promise<Ma
     throw new CustomError('Wrong password', ErrorCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
   };
 
-  const token = jwt.sign({ userId: manager.id, email: manager.email, role: manager.role }, setting.jwt.secret, { expiresIn: '1day' });
+  const token = jwt.sign({
+    user: {
+      userId: manager._id,
+      email: manager.email,
+      role: manager.role
+    }    
+  },
+    setting.jwt.secret,
+    {expiresIn: '1d'}
+
+);
 
   console.log('login successful');
 

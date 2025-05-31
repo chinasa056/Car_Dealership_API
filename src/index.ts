@@ -2,13 +2,13 @@ import express, { NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
 dotenv.config();
 import cors from "cors";
-// import bodyParser from "body-parser";
 import compression from "compression";
 import setting from "./core/config/application";
 import dbConnect from "./core/config/database";
 import userRoutes from "./api/route/customer";
 import managerRoutes from "./api/route/manager";
 import { errorHandler } from "./api/middleware/handleErrors";
+import categoryRoute from './api/route/category'
 
 const app = express();
 const port = setting.port;
@@ -20,17 +20,17 @@ app.use(
 );
 
 app.use(compression());
-app.use(express.json())
-// app.use(bodyParser.json());
-app.use("/api", userRoutes)
-app.use("/api", managerRoutes)
+app.use(express.json());
+app.use("/api", userRoutes);
+app.use("/api", managerRoutes);
+app.use("/api", categoryRoute);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err) {
     errorHandler(err, req, res, next);
   } else {
-   next();
-}
+    next();
+  }
 });
 
 const startServer = async () => {
@@ -39,4 +39,5 @@ const startServer = async () => {
     console.log(`server is listening on port: ${port}`);
   });
 };
+
 startServer();
