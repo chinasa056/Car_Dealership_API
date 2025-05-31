@@ -1,10 +1,11 @@
 import { Router } from 'express';
 import * as RequestHandler from '../requestHandlers/category';
 import { authenticate, authorizeManager } from '../middleware/authentication';
+import { createCategoryValidator } from 'src/core/validation/category';
 
 const router = Router();
 
-router.post('/category/create', authenticate, authorizeManager, RequestHandler.createCategory);
+router.post('/category/create', authenticate, authorizeManager,createCategoryValidator ,RequestHandler.createCategory);
 
 router.get('/category/fetch', RequestHandler.getAllCategories);
 

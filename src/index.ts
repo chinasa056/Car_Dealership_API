@@ -9,6 +9,7 @@ import userRoutes from "./api/route/customer";
 import managerRoutes from "./api/route/manager";
 import { errorHandler } from "./api/middleware/handleErrors";
 import categoryRoute from './api/route/category'
+import carRoute from './api/route/car'
 
 const app = express();
 const port = setting.port;
@@ -24,6 +25,7 @@ app.use(express.json());
 app.use("/api", userRoutes);
 app.use("/api", managerRoutes);
 app.use("/api", categoryRoute);
+app.use("/api", carRoute);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err) {
