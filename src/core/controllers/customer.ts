@@ -3,6 +3,7 @@ import { ErrorCode } from "../enum/error";
 import { HttpStatus } from "../enum/httpCode";
 import { CustomError } from "../error/CustomError";
 import { CustomerLoginRequest, ICustomer, RegisterCustomerResponse, LoginCustomerResponse } from "../interfaces/customer";
+import { Car } from "../models/car";
 import { Customer } from "../models/customer";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'

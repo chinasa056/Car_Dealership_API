@@ -75,16 +75,20 @@ export const processDeleteCar = async (id: string): Promise<DeleteCarResponse> =
 };
 
 export const processGetCarById = async (id: string): Promise<CreateCarResponse> => {
-  const car = await Car.findById(id).populate("category");
+const car = await Car.findById(id)
+  .select('-__v -createdAt -updatedAt')
+  .populate('category', 'name'); 
+
   if (!car) {
     throw new CustomError(`Car with ID ${id} not found`, ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
-  };
+  }
 
   return {
     message: "Car fetched successfully",
     data: car,
   };
 };
+
 
 export const processGetALLCars = async (
   query: FilterCarsRequest
@@ -105,7 +109,11 @@ export const processGetALLCars = async (
 
   try {
     const total = await Car.countDocuments(filters);
-    const cars = await Car.find(filters).skip(startIndex).limit(limit);
+
+    const cars = await Car.find(filters)
+      .select('-__v -createdAt -updatedAt')
+      .skip(startIndex)
+      .limit(limit).populate('category', 'name');
 
     const totalPages = Math.ceil(total / limit);
 
@@ -135,7 +143,10 @@ export const processGetALLCars = async (
       data: pagination,
     };
   } catch (err) {
-    throw new CustomError('Failed to retrieve cars', ErrorCode.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+    throw new CustomError(
+      'Failed to retrieve cars',
+      ErrorCode.INTERNAL_SERVER_ERROR,
+      HttpStatus.INTERNAL_SERVER_ERROR
+    );
   }
 };
-

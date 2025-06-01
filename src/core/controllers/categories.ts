@@ -40,7 +40,7 @@ export const processCreateCategory = async (
 };
 
 export const processGetAllCategories = async (): Promise<CreateCategoryResponse> => {
-  const categories = await Category.find()
+  const categories = await Category.find().select('name');
 
   return {
     message: "Categories fetched successfully",
@@ -69,7 +69,7 @@ export const processDeleteCategory = async (
 export const processGetCategoryCars = async (
   categoryId: string
 ): Promise<GetCategoryCarsResponse> => {
-  const category = await Category.findById(categoryId);
+  const category = await Category.findById(categoryId).select('name');
   if (!category) {
     throw new CustomError('Category not found', ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
   };
@@ -79,7 +79,7 @@ export const processGetCategoryCars = async (
   return {
     message: 'Category and associated cars fetched successfully',
     data: {
-      category: category.name,
+      category,
       cars,
     },
   };
