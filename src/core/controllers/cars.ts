@@ -13,7 +13,8 @@ import {
   DeleteCarResponse,
   UpdateCarRequest,
   UpdateCarResponse,
-  CarFilters,
+  FilterCarsRequest,
+  PaginatedCarsResponse,
 } from "src/core/interfaces/car";
 
 export const processCreateCar = async (
@@ -95,46 +96,56 @@ export const processGetCarById = async (id: string): Promise<GetSingleCarRespons
   };
 };
 
-// export const processGetAllCars = async (
-//   filters: CarFilters,
-//   page: number,
-//   limit: number
-// ): Promise<GetAllCarsResponse> => {
-//   const query: any = {};
+export const processGetALLCars = async (
+  query: FilterCarsRequest
+): Promise<PaginatedCarsResponse> => {
+  const page = query.page || 1;
+  const limit = query.limit || 10;
+  const startIndex = (page - 1) * limit;
 
-//   if (filters.brand) {
-//     query.brand = { $regex: filters.brand, $options: "i" };
-//   }
+  const filters: any = {};
+  if (query.brand) filters.brand = query.brand;
+  if (query.carModel) filters.carModel = query.carModel;
+  if (typeof query.available === 'boolean') filters.available = query.available;
+  if (query.minPrice || query.maxPrice) {
+    filters.price = {};
+    if (query.minPrice) filters.price.$gte = query.minPrice;
+    if (query.maxPrice) filters.price.$lte = query.maxPrice;
+  }
 
-//   if (filters.carModel) {
-//     query.carModel = { $regex: filters.carModel, $options: "i" };
-//   }
+  try {
+    const total = await Car.countDocuments(filters);
+    const cars = await Car.find(filters).skip(startIndex).limit(limit);
 
-//   if (filters.minPrice || filters.maxPrice) {
-//     query.price = {};
-//     if (filters.minPrice) query.price.$gte = filters.minPrice;
-//     if (filters.maxPrice) query.price.$lte = filters.maxPrice;
-//   }
+    const totalPages = Math.ceil(total / limit);
 
-//   if (filters.available !== undefined) {
-//     query.available = filters.available;
-//   }
+    const pagination: any = {
+      currentPage: page,
+      totalPages,
+      totalItems: total,
+      results: cars,
+    };
 
-//   const total = await Car.countDocuments(query);
-//   const cars = await Car.find(query)
-//     .populate("category")
-//     .skip((page - 1) * limit)
-//     .limit(limit)
-//     .sort({ createdAt: -1 });
+    if (page < totalPages) {
+      pagination.next = {
+        page: page + 1,
+        limit,
+      };
+    }
 
-//   return {
-//     message: "Cars fetched successfully",
-//     data: cars,
-//     pagination: {
-//       total,
-//       page,
-//       limit,
-//       pages: Math.ceil(total / limit),
-//     },
-//   };
-// };
+    if (page > 1) {
+      pagination.previous = {
+        page: page - 1,
+        limit,
+      };
+    }
+
+    return {
+      message: 'Cars retrieved successfully',
+      data: pagination,
+    };
+  } catch (err) {
+    throw new CustomError('Failed to retrieve cars', ErrorCode.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+};
+

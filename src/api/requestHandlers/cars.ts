@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import * as CarController from "src/core/controllers/cars";
 import { responseHandler } from "src/core/helpers/utilities";
-import { HttpStatus } from "src/core/enum/httpCode";
-import { CustomError } from "src/core/error/CustomError";
 
-export const createCarHandler = async (req: Request, res: Response, next: NextFunction) => {
+
+export const createCar = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = res.locals.user.userId;
     const { categoryId } = req.params
@@ -15,7 +14,7 @@ export const createCarHandler = async (req: Request, res: Response, next: NextFu
   }
 };
 
-export const updateCarHandler = async (req: Request, res: Response, next: NextFunction) => {
+export const updateCar = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await CarController.processUpdateCar(req.params.id, req.body);
     res.status(201).json(responseHandler(result.data, result.message));
@@ -24,16 +23,16 @@ export const updateCarHandler = async (req: Request, res: Response, next: NextFu
   }
 };
 
-export const deleteCarHandler = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteCar = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await CarController.processDeleteCar(req.params.id);
-  res.status(201).json({message: 'Car deleted successfully'})
+    await CarController.processDeleteCar(req.params.id);
+    res.status(201).json({ message: 'Car deleted successfully' })
   } catch (error) {
     next(error);
   }
 };
 
-export const getCarByIdHandler = async (req: Request, res: Response, next: NextFunction) => {
+export const getCarById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await CarController.processGetCarById(req.params.id);
     res.status(201).json(responseHandler(result.data, result.message));
@@ -42,32 +41,22 @@ export const getCarByIdHandler = async (req: Request, res: Response, next: NextF
   }
 };
 
-// export const getAllCarsHandler = async (req: Request, res: Response, next: NextFunction) => {
-//   try {
-//     const {
-//       brand,
-//       carModel,
-//       minPrice,
-//       maxPrice,
-//       available,
-//       page = "1",
-//       limit = "10",
-//     } = req.query;
 
-//     const filters = {
-//       brand: brand as string,
-//       carModel: carModel as string,
-//       minPrice: minPrice ? parseFloat(minPrice as string) : undefined,
-//       maxPrice: maxPrice ? parseFloat(maxPrice as string) : undefined,
-//       available: available !== undefined ? available === "true" : undefined,
-//     };
+export const getAllCars = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const query = {
+      page: req.query.page ? parseInt(req.query.page as string) : 1,
+      limit: req.query.limit ? parseInt(req.query.limit as string) : 5,
+      brand: req.query.brand as string,
+      carModel: req.query.carModel as string,
+      available: req.query.available !== undefined ? req.query.available === 'true' : undefined,
+      minPrice: req.query.minPrice ? parseFloat(req.query.minPrice as string) : undefined,
+      maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice as string) : undefined,
+    };
 
-//     const result = await CarController.processGetAllCars(filters, parseInt(page as string), parseInt(limit as string));
-//     return responseHandler(res, HttpStatus.OK, result.message, {
-//       cars: result.data,
-//       pagination: result.pagination,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+    const result = await CarController.processGetALLCars(query);
+    res.status(200).json(responseHandler(result.data, result.message));
+  } catch (error) {
+    next(error);
+  }
+};

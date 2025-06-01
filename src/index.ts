@@ -22,10 +22,10 @@ app.use(
 
 app.use(compression());
 app.use(express.json());
-app.use("/api", userRoutes);
-app.use("/api", managerRoutes);
-app.use("/api", categoryRoute);
-app.use("/api", carRoute);
+app.use("/customer", userRoutes);
+app.use("/manager", managerRoutes);
+app.use("/category", categoryRoute);
+app.use("/car", carRoute);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err) {

@@ -27,13 +27,26 @@ export interface UpdateCarRequest {
   category?: Types.ObjectId | string;
 };
 
-export interface CarFilters {
+export interface FilterCarsRequest {
+  page?: number;
+  limit?: number;
   brand?: string;
   carModel?: string;
+  available?: boolean;
   minPrice?: number;
   maxPrice?: number;
-  available?: boolean;
-};
+}
+
+export interface PaginatedCarsResponse {
+  message: string;
+  data: {
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+    results: any[];
+  };
+}
+
 
 export interface CreateCarResponse {
   message: string;

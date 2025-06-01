@@ -3,7 +3,9 @@ import * as RequestHandler from '../requestHandlers/manager';
 
 const router = Router();
 
-router.post('/manager/register', RequestHandler.registerManager);
-router.post('/manager/login', RequestHandler.loginManager);
+router.post('/register', RequestHandler.registerManager);
+router.post('/login', RequestHandler.loginManager);
+router.patch('/update/:mnagerId', RequestHandler.updateManagerHandler);
+router.delete('/delete/:managerId', RequestHandler.deleteManagerHandler)
 
 export default router

@@ -22,3 +22,19 @@ export interface ManagerLoginResponse {
   email: string;
   token: string
 };
+
+export interface UpdateManagerRequest {
+  name?: string;
+  email?: string;
+  password?: string;
+}
+
+export interface UpdateManagerResponse {
+  message: string;
+  data: any;
+}
+
+export interface DeleteManagerResponse {
+  message: string;
+  data: any;
+}
