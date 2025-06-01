@@ -3,8 +3,8 @@ import { RequestHandler } from "express";
 import {
   processCreateCategory,
   processGetAllCategories,
-  processGetCategoryById,
   processDeleteCategory,
+  processGetCategoryCars,
 } from "src/core/controllers/categories";
 import { responseHandler } from "src/core/helpers/utilities";
 
@@ -29,15 +29,6 @@ export const getAllCategories: RequestHandler = async (req, res, next) => {
   };
 };
 
-export const getCategoryById: RequestHandler = async (req, res, next) => {
-  try {
-    const response = await processGetCategoryById(req.params.id);
-    res.status(200).json(responseHandler(response));
-  } catch (error) {
-    next(error);
-  };
-};
-
 export const deleteCategory: RequestHandler = async (req, res, next) => {
   try {
     const response = await processDeleteCategory(req.params.id);
@@ -46,3 +37,18 @@ export const deleteCategory: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getCategoryCarsHandler: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const { categoryId } = req.params;
+    const response = await processGetCategoryCars(categoryId);
+    res.status(200).json(responseHandler(response.data, response.message));
+  } catch (error) {
+    next(error);
+  }
+};
+

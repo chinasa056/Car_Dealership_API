@@ -5,12 +5,12 @@ import { createCategoryValidator } from 'src/core/validation/category';
 
 const router = Router();
 
-router.post('/category/create', authenticate, authorizeManager,createCategoryValidator ,RequestHandler.createCategory);
+router.post('/create', authenticate, authorizeManager,createCategoryValidator ,RequestHandler.createCategory);
 
-router.get('/category/fetch', RequestHandler.getAllCategories);
+router.get('/', RequestHandler.getAllCategories);
 
-router.get('/category/fetchOne/:id', RequestHandler.getCategoryById);
+router.get('/:categoryId', authenticate, RequestHandler.getCategoryCarsHandler)
 
-router.delete('/category/delete/:id', authenticate, authorizeManager, RequestHandler.deleteCategory);
+router.delete('/delete/:id', authenticate, authorizeManager, RequestHandler.deleteCategory);
 
 export default router;

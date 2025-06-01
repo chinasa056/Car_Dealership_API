@@ -6,19 +6,16 @@ import { ErrorCode } from "src/core/enum/error";
 import { HttpStatus } from "src/core/enum/httpCode";
 
 import {
-  CreateCarRequest,
   CreateCarResponse,
-  GetAllCarsResponse,
-  GetSingleCarResponse,
   DeleteCarResponse,
   UpdateCarRequest,
-  UpdateCarResponse,
   FilterCarsRequest,
   PaginatedCarsResponse,
+  ICar,
 } from "src/core/interfaces/car";
 
 export const processCreateCar = async (
-  body: CreateCarRequest,
+  body: ICar,
   userId: string,
   categoryId: string
 ): Promise<CreateCarResponse> => {
@@ -33,7 +30,7 @@ export const processCreateCar = async (
   };
 
   const newCar =new Car({
-    category: categoryExists,
+    category: categoryExists.name,
       brand: body.brand,
       carModel: body.carModel,
       price: body.price,
@@ -51,18 +48,11 @@ export const processCreateCar = async (
 export const processUpdateCar = async (
   id: string,
   body: UpdateCarRequest
-): Promise<UpdateCarResponse> => {
+): Promise<CreateCarResponse> => {
   const car = await Car.findById(id);
   if (!car) {
     throw new CustomError(`Car with ID ${id} not found`, ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
   };
-
-  if (body.category) {
-    const category = await Category.findById(body.category);
-    if (!category) {
-      throw new CustomError("Provided category not found", ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
-    }
-  }
 
   const updatedCar = await Car.findByIdAndUpdate(id, body, { new: true });
 
@@ -76,7 +66,7 @@ export const processDeleteCar = async (id: string): Promise<DeleteCarResponse> =
   const car = await Car.findByIdAndDelete(id);
   if (!car) {
     throw new CustomError(`Car with ID ${id} not found`, ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
-  }
+  };
 
   return {
     message: "Car deleted successfully",
@@ -84,11 +74,11 @@ export const processDeleteCar = async (id: string): Promise<DeleteCarResponse> =
   };
 };
 
-export const processGetCarById = async (id: string): Promise<GetSingleCarResponse> => {
+export const processGetCarById = async (id: string): Promise<CreateCarResponse> => {
   const car = await Car.findById(id).populate("category");
   if (!car) {
     throw new CustomError(`Car with ID ${id} not found`, ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
-  }
+  };
 
   return {
     message: "Car fetched successfully",

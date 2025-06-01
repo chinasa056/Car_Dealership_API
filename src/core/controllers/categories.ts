@@ -4,16 +4,16 @@ import { CustomError } from "src/core/error/CustomError";
 import { ErrorCode } from "src/core/enum/error";
 import { HttpStatus } from 'src/core/enum/httpCode'
 import {
-  CreateCategoryRequest,
   CreateCategoryResponse,
-  GetAllCategoriesResponse,
-  GetSingleCategoryResponse,
   DeleteCategoryResponse,
+  GetCategoryCarsResponse,
+  ICategory,
 } from "src/core/interfaces/category";
 import { Manager } from "../models/manager";
+import { Car } from "../models/car";
 
 export const processCreateCategory = async (
-  body: CreateCategoryRequest,
+  body: ICategory,
   userId: string
 ): Promise<CreateCategoryResponse> => {
 
@@ -22,7 +22,7 @@ export const processCreateCategory = async (
     throw new CustomError('Manager not found', ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND)
   };
 
-  const existingCategory = await Category.findOne({ name: body.name });
+  const existingCategory = await Category.findOne({ name: body.name.toLowerCase() });
   if (existingCategory) {
     throw new CustomError(
       `Category with name '${body.name}' already exists`,
@@ -39,30 +39,12 @@ export const processCreateCategory = async (
   };
 };
 
-export const processGetAllCategories = async (): Promise<GetAllCategoriesResponse> => {
+export const processGetAllCategories = async (): Promise<CreateCategoryResponse> => {
   const categories = await Category.find()
 
   return {
     message: "Categories fetched successfully",
     data: categories
-  };
-};
-
-export const processGetCategoryById = async (
-  id: string
-): Promise<GetSingleCategoryResponse> => {
-  const category = await Category.findById(id);
-  if (!category) {
-    throw new CustomError(
-      `Category with ID ${id} not found`,
-      ErrorCode.NOT_FOUND,
-      HttpStatus.NOT_FOUND
-    );
-  };
-
-  return {
-    message: "Category fetched successfully",
-    data: category
   };
 };
 
@@ -83,3 +65,23 @@ export const processDeleteCategory = async (
     data: null,
   };
 };
+
+export const processGetCategoryCars = async (
+  categoryId: string
+): Promise<GetCategoryCarsResponse> => {
+  const category = await Category.findById(categoryId);
+  if (!category) {
+    throw new CustomError('Category not found', ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+  };
+
+  const cars = await Car.find({ category: categoryId });
+
+  return {
+    message: 'Category and associated cars fetched successfully',
+    data: {
+      category: category.name,
+      cars,
+    },
+  };
+};
+
