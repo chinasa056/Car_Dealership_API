@@ -10,8 +10,8 @@ import { responseHandler } from "src/core/helpers/utilities";
 
 export const createCategory: RequestHandler = async (req, res, next) => {
   try {
-
-    const response = await processCreateCategory(req.body, res.locals.user.userId);
+    const userId = res.locals.user._id
+    const response = await processCreateCategory(req.body,userId);
     res
       .status(201)
       .json(responseHandler(response, "Category created successfully"));

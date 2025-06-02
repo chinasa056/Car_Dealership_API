@@ -1,28 +1,8 @@
-// {
-//   "compilerOptions": {
-//     "module": "commonjs",
-//     "esModuleInterop": true,
-//     "target": "es6",
-//     "noImplicitAny": true,
-//     "skipLibCheck": true,
-//     "moduleResolution": "node",
-//     "sourceMap": true,
-//     "rootDir": ".",
-//     "outDir": "dist",
-//     "baseUrl": ".",
-//     "allowJs": true,
-//     "paths": {
-//       "": ["node_modules/"]
-//     }
-//   },
-//   "include": ["src/**/*"]
-// }
-
 {
   "compilerOptions": {
     "target": "ES2020",
     "module": "commonjs",
-    "rootDir": "src",
+    "rootDir": ".",
     "outDir": "dist",
     "strict": true,
     "esModuleInterop": true,
@@ -30,10 +10,14 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-
-    "baseUrl": "./src",
+    "sourceMap": true,
+    "declaration": true,
+    "types": ["jest", "node"],
+    "baseUrl": ".",
     "paths": {
-      "src/*": ["./*"]
+      "src/*": ["src/*"]
     }
-  }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "*/.test.ts", "dist"]
 }

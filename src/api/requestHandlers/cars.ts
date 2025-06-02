@@ -5,7 +5,7 @@ import { responseHandler } from "src/core/helpers/utilities";
 
 export const createCar = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = res.locals.user.userId;
+    const userId = res.locals.user._id
     const { categoryId } = req.params
     const result = await CarController.processCreateCar(req.body, userId, categoryId);
     res.status(201).json(responseHandler(result.data, result.message));

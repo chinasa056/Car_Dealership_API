@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Error as MongooseError } from "mongoose";
 import { JsonWebTokenError } from "jsonwebtoken"
-import { Errors } from "core/enum/error";
+import { Errors } from "src/core/enum/error";
 import { CustomError } from "src/core/error/CustomError";
 
 export const errorHandler = (
@@ -53,7 +53,7 @@ export const errorHandler = (
       status: false,
       error: 'duplicate_key',
       message: `${field} already exists.`,
-      data: {}
+      data: error.message
     });
   };
 
@@ -62,7 +62,7 @@ export const errorHandler = (
       status: false,
       error: 'invalid_token',
       message: 'Invalid token',
-      data: null
+      data: error.message
     });
   };
 
@@ -71,6 +71,6 @@ export const errorHandler = (
     status: false,
     error: 'server_error',
     message: Errors.SERVER_ERROR,
-    data: {}
+    data:error.message
   });
 };

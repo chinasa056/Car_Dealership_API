@@ -32,7 +32,7 @@ export const authenticate = async (
     }
     const {user} = jwt.verify(token, setting.jwt.secret) as JwtPayload;
     let authUser;
-    console.log(user.userId);
+    // console.log(user.userId);
     
     if (user && user.userId) {
       authUser = await Customer.findOne({ _id: user.userId });
@@ -46,9 +46,11 @@ export const authenticate = async (
           );
         }
       }
-    }
+    };
 
-    res.locals.user = user
+    console.log("Authenticated user:", authUser); 
+
+    res.locals.user = authUser
     next();
   } catch (error) {
     if (error instanceof TokenExpiredError) {
@@ -65,15 +67,34 @@ export const authenticate = async (
   }
 };
 
+// export const authorizeManager = (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ): void => {
+//   console.log(res.locals);
+  
+//   if (res.locals.user.role !== 'manager') {
+//     res.status(403).json({ message: 'Access denied: Manager role required' });
+//     return;
+//   }
+
+//   next();
+// };
+
 export const authorizeManager = (
   req: Request,
   res: Response,
   next: NextFunction
 ): void => {
-  if (res.locals.user.role !== 'manager') {
-    res.status(403).json({ message: 'Access denied: Manager role required' });
-    return;
+  const user = res.locals.user;
+  console.log('user object from res.locls.user', user);
+
+  if (!user || user.role !== 'manager') {
+     res.status(403).json({ message: 'Access denied: Manager role required' });
+     return
   }
 
   next();
 };
+
