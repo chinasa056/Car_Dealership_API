@@ -9,6 +9,7 @@
     "test:watch": "jest --watch",
     "build": "tsc",
     "start:prod": "node dist/src/index.js",
+    "dev": "ts-node-dev --respawn ./src/index.ts",
     "deploy": "npm run build && npm run start:prod"
   },
   "keywords": [],

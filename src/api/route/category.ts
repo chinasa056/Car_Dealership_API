@@ -9,7 +9,7 @@ router.post('/create', authenticate, authorizeManager,createCategoryValidator ,R
 
 router.get('/', RequestHandler.getAllCategories);
 
-router.get('/:categoryId', authenticate, RequestHandler.getCategoryCarsHandler)
+router.get('/:categoryId', RequestHandler.getCategoryCarsHandler)
 
 router.delete('/delete/:id', authenticate, authorizeManager, RequestHandler.deleteCategory);
 

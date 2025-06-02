@@ -60,7 +60,7 @@ describe('Car Controller - Create Car', () => {
         year: 2023
       } as any,
       mockManagerId,
-      mockCategoryId
+      mockCategoryId as any
     );
 
     // Assert
@@ -86,7 +86,7 @@ describe('Car Controller - Create Car', () => {
           year: 2023
         } as any,
         mockManagerId,
-        mockCategoryId
+        mockCategoryId as any
       )
     ).rejects.toThrow(CustomError);
     
@@ -109,7 +109,7 @@ describe('Car Controller - Create Car', () => {
           year: 2023
         } as any,
         mockManagerId,
-        mockCategoryId
+        mockCategoryId as any
       )
     ).rejects.toThrow(CustomError);
     

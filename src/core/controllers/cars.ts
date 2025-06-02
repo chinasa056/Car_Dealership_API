@@ -13,28 +13,91 @@ import {
   PaginatedCarsResponse,
   ICar,
 } from "src/core/interfaces/car";
+import { Types } from "mongoose";
 
+// export const processCreateCar = async (
+//   body: ICar,
+//   userId: string,
+//   categoryId: any
+// ): Promise<CreateCarResponse> => {
+//   const manager = await Manager.findById(userId);
+//   if (!manager) {
+//     throw new CustomError("Manager not found", ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+//   };
+
+//   const categoryExists = await Category.findById(categoryId);
+//   if (!categoryExists) {
+//     throw new CustomError("Category not found", ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+//   };
+
+//   const newCar = new Car({
+//     category: categoryExists._id,
+//       brand: body.brand,
+//       carModel: body.carModel,
+//       price: body.price,
+//       year: body.year
+//   });
+
+//   await newCar.save();
+
+//   return {
+//     message: "Car created successfully",
+//     data: newCar,
+//   };
+// };
+
+// export const processCreateCar = async (
+//   body: CreateCarDTO,
+//   userId: string,
+//   categoryId: string
+// ): Promise<CreateCarResponse> => {
+//   const manager = await Manager.findById(userId);
+//   if (!manager) {
+//     throw new CustomError("Manager not found", ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+//   }
+
+//   const categoryExists = await Category.findById(categoryId);
+//   if (!categoryExists) {
+//     throw new CustomError("Category not found", ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+//   }
+
+//   const newCar = new Car({
+//     brand: body.brand,
+//     carModel: body.carModel,
+//     price: body.price,
+//     year: body.year,
+//     category: categoryExists._id,
+//     available: true // explicitly set it, since it's not in body
+//   });
+
+//   await newCar.save();
+
+//   return {
+//     message: "Car created successfully",
+//     data: newCar,
+//   };
+// };
 export const processCreateCar = async (
   body: ICar,
   userId: string,
-  categoryId: string
+  categoryId: Types.ObjectId
 ): Promise<CreateCarResponse> => {
   const manager = await Manager.findById(userId);
   if (!manager) {
     throw new CustomError("Manager not found", ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
   };
+    const categoryExists = await Category.findOne({ _id: categoryId });
 
-  const categoryExists = await Category.findById(categoryId);
-  if (!categoryExists) {
-    throw new CustomError("Category not found", ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
-  };
+    if (!categoryExists) {
+      throw new CustomError("Category not found", ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+    };
 
-  const newCar =new Car({
-    category: categoryExists.name,
-      brand: body.brand,
-      carModel: body.carModel,
-      price: body.price,
-      year: body.year
+  const newCar = new Car({
+    category: categoryId,
+    brand: body.brand,
+    carModel: body.carModel,
+    price: body.price,
+    year: body.year
   });
 
   await newCar.save();
@@ -94,7 +157,7 @@ export const processGetALLCars = async (
   query: FilterCarsRequest
 ): Promise<PaginatedCarsResponse> => {
   const page = query.page || 1;
-  const limit = query.limit || 10;
+  const limit = query.limit || 5;
   const startIndex = (page - 1) * limit;
 
   const filters: any = {};

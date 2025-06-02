@@ -6,7 +6,7 @@ const router = Router();
 
 router.post('/create/:categoryId', authenticate, authorizeManager, createCarValidator, RequestHandler.createCar);
 
-router.get('/getbyid/:id', authenticate, RequestHandler.getCarById);
+router.get('/:id', authenticate, RequestHandler.getCarById);
 
 router.patch('/update/:id', authenticate, authorizeManager,updateCarValidator, RequestHandler.updateCar);
 

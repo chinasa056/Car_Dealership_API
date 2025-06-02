@@ -9,6 +9,15 @@ export interface ICar extends Document {
     category: Types.ObjectId;
 };
 
+// src/interfaces/dto/CreateCarDTO.ts
+export interface CreateCarDTO {
+  brand: string;
+  carModel: string;
+  price: number;
+  year: number;
+}
+
+
 export interface UpdateCarRequest {
   brand?: string;
   carModel?: string;
@@ -46,4 +55,3 @@ export interface DeleteCarResponse {
   message: string;
   data: null;
 };
-

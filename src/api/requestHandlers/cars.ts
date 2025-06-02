@@ -1,13 +1,28 @@
 import { Request, Response, NextFunction } from "express";
+import { any } from "joi";
+import mongoose from "mongoose";
 import * as CarController from "src/core/controllers/cars";
 import { responseHandler } from "src/core/helpers/utilities";
 
 
+// export const createCar = async (req: Request, res: Response, next: NextFunction) => {
+//   try {
+//     const userId = res.locals.user._id
+//     const categoryId = req.params.categ
+//     const result = await CarController.processCreateCar(req.body, userId, categoryId);
+//     res.status(201).json(responseHandler(result.data, result.message));
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
 export const createCar = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = res.locals.user._id
-    const { categoryId } = req.params
-    const result = await CarController.processCreateCar(req.body, userId, categoryId);
+    const { categoryId } = req.params;
+    const category = new mongoose.Types.ObjectId(categoryId);
+    
+    const result = await CarController.processCreateCar(req.body, userId, category);
     res.status(201).json(responseHandler(result.data, result.message));
   } catch (error) {
     next(error);
