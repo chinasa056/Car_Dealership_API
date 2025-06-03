@@ -1,7 +1,7 @@
 import { Router } from "express";
 import * as RequestHandler from '../requestHandlers/cars';
 import { authenticate, authorizeManager } from "../middleware/authentication";
-import { carQueryValidator, createCarValidator, updateCarValidator } from "src/core/validation/car";
+import { createCarValidator, updateCarValidator } from "src/core/validation/car";
 const router = Router();
 
 router.post('/:categoryId', authenticate, authorizeManager, createCarValidator, RequestHandler.createCar);
@@ -12,7 +12,7 @@ router.patch('/:id', authenticate, authorizeManager,updateCarValidator, RequestH
 
 router.delete('/:id', authenticate, authorizeManager, RequestHandler.deleteCar);
 
-router.get('/', authenticate, carQueryValidator, RequestHandler.getAllCars)
+router.get('/', authenticate, RequestHandler.getAllCars)
 
 
 export default router

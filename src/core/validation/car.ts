@@ -73,30 +73,3 @@ export const updateCarValidator = (
   next();
 };
 
-export const carQueryValidator = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void => {
-  const schema = Joi.object({
-    brand: Joi.string().trim().optional(),
-    carModel: Joi.string().trim().optional(),
-    available: Joi.boolean().truthy('true').falsy('false').optional(),
-    minPrice: Joi.number().min(0).optional(),
-    maxPrice: Joi.number().min(0).optional(),
-    page: Joi.number().integer().min(1).optional(),
-    limit: Joi.number().integer().min(1).max(100).optional(),
-  });
-
-  const { error } = schema.validate(req.query, { abortEarly: false });
-
-  if (error) {
-     res.status(422).json({
-      message: 'Invalid query parameters.',
-      errors: error.details.map((detail) => detail.message),
-    });
-    return
-  }
-
-  next();
-};
