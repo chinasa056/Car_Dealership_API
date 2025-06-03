@@ -4,7 +4,7 @@ import { loginCustomerValidator, registerCustomerValidator } from 'src/core/vali
 
 const router = Router();
 
-router.post('/create',registerCustomerValidator, RequestHandler.createCustomer);
+router.post('/',registerCustomerValidator, RequestHandler.createCustomer);
 router.post('/login',loginCustomerValidator, RequestHandler.loginCustomer);
 
 export default router

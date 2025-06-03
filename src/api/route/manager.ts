@@ -5,10 +5,10 @@ import { createManagerValidator, loginManagerValidator } from "src/core/validati
 
 const router = Router();
 
-router.post('/register', createManagerValidator, RequestHandler.registerManager);
+router.post('/', createManagerValidator, RequestHandler.registerManager);
 
 router.post('/login',loginManagerValidator, RequestHandler.loginManager);
 
-router.delete('/delete/:managerId', authenticate, RequestHandler.deleteManagerHandler)
+router.delete('/:managerId', authenticate, RequestHandler.deleteManagerHandler)
 
 export default router

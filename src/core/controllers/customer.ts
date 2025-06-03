@@ -11,7 +11,7 @@ import jwt from 'jsonwebtoken'
 export const processCustomerRegistration = async (
   body: ICustomer
 ): Promise<RegisterCustomerResponse> => {
-  const customerExist = await Customer.findOne({ email: body.email });
+  const customerExist = await Customer.findOne({ email: body.email.toLowerCase() });
 
   if (customerExist) {
     throw new CustomError("User with this email already exist", ErrorCode.CONFLICT, HttpStatus.CONFLICT);
@@ -22,7 +22,7 @@ export const processCustomerRegistration = async (
 
   const newCustomer = await Customer.create({
     name: body.name,
-    email: body.email,
+    email: body.email.toLowerCase(),
     password: hashPassword,
     phone: body.phone
   });
@@ -31,7 +31,7 @@ export const processCustomerRegistration = async (
 };
 
 export const processCustomerLogin = async (body: CustomerLoginRequest): Promise<LoginCustomerResponse> => {
-  const customer = await Customer.findOne({ email: body.email });
+  const customer = await Customer.findOne({ email: body.email.toLowerCase() });
 
   if (!customer) {
     throw new CustomError('Email or password incorrect', ErrorCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);

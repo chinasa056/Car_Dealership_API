@@ -9,7 +9,7 @@ import { DeleteManagerResponse, IManager, ManagerLoginRequest, ManagerLoginRespo
 
 
 export const processManagerRegistratin = async (body: IManager): Promise<RegisterManagerResponse> => {
-    const manager = await Manager.findOne({ email: body.email });
+    const manager = await Manager.findOne({ email: body.email.toLowerCase() });
 
     if (manager) {
         throw new CustomError(`manager with email: ${body.email} already exist`, ErrorCode.CONFLICT, HttpStatus.CONFLICT)
@@ -20,7 +20,7 @@ export const processManagerRegistratin = async (body: IManager): Promise<Registe
 
     const newManager = new Manager({
         name: body.name,
-        email: body.email,
+        email: body.email.toLowerCase(),
         password: hashedPassword
     });
 
@@ -30,7 +30,7 @@ export const processManagerRegistratin = async (body: IManager): Promise<Registe
 };
 
 export const processManagerLogin = async (body: ManagerLoginRequest): Promise<ManagerLoginResponse> => {
-  const manager = await Manager.findOne({ email: body.email });
+  const manager = await Manager.findOne({ email: body.email.toLowerCase() });
 
   if (!manager) {
     throw new CustomError('Email or password incorrect', ErrorCode.CONFLICT, HttpStatus.CONFLICT);
