@@ -74,7 +74,7 @@ export const processGetCategoryCars = async (
     throw new CustomError('Category not found', ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
   };
 
-  const cars = await Car.find({ category: categoryId });
+  const cars = await Car.find({ category: categoryId }).select('-category -createdAt -updatedAt -__v')
 
   return {
     message: 'Category and associated cars fetched successfully',
