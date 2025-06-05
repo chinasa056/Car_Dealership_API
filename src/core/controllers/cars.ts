@@ -161,8 +161,8 @@ export const processGetALLCars = async (
   const startIndex = (page - 1) * limit;
 
   const filters: any = {};
-  if (query.brand) filters.brand = query.brand;
-  if (query.carModel) filters.carModel = query.carModel;
+  if (query.brand) filters.brand = query.brand.toLowerCase();
+  if (query.carModel) filters.carModel = query.carModel.toLowerCase();
   if (typeof query.available === 'boolean') filters.available = query.available;
   if (query.minPrice || query.maxPrice) {
     filters.price = {};
