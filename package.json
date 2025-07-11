@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-     "start": "nodemon --exec ts-node -r tsconfig-paths/register src/index.ts",
+    "start": "nodemon --exec ts-node -r tsconfig-paths/register src/index.ts",
     "test": "jest --detectOpenHandles",
     "test:watch": "jest --watch",
     "build": "tsc",
@@ -17,6 +17,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.9",
+    "@types/multer": "^2.0.0",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
@@ -33,6 +34,7 @@
     "@types/mongoose": "^5.11.96",
     "bcrypt": "^6.0.0",
     "body-parser": "^2.2.0",
+    "cloudinary": "^2.7.0",
     "compression": "^1.8.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
@@ -42,6 +44,7 @@
     "jsonwebtoken": "^9.0.2",
     "module-alias": "^2.2.3",
     "mongoose": "^8.15.1",
+    "multer": "^2.0.1",
     "ts-jest": "^29.3.4",
     "ts-node-dev": "^2.0.0"
   },
