@@ -1,28 +1,34 @@
 import { Request, Response, NextFunction } from "express";
-import { any } from "joi";
 import mongoose from "mongoose";
 import * as CarController from "src/core/controllers/cars";
 import { responseHandler } from "src/core/helpers/utilities";
 
-
-// export const createCar = async (req: Request, res: Response, next: NextFunction) => {
-//   try {
-//     const userId = res.locals.user._id
-//     const categoryId = req.params.categ
-//     const result = await CarController.processCreateCar(req.body, userId, categoryId);
-//     res.status(201).json(responseHandler(result.data, result.message));
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
-export const createCar = async (req: Request, res: Response, next: NextFunction) => {
+export const createCar = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const userId = res.locals.user._id
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({ message: 'Unauthorized: No user ID found.' });
+    };
+
     const { categoryId } = req.params;
     const category = new mongoose.Types.ObjectId(categoryId);
-    
-    const result = await CarController.processCreateCar(req.body, userId, category);
+
+    const files = req.files as Express.Multer.File[];
+    if (!files || files.length === 0) {
+      return res.status(400).json({ message: 'Please upload car images.' });
+    }
+
+    const result = await CarController.processCreateCar(
+      req.body,
+      userId,
+      category,
+      files
+    );
+
     res.status(201).json(responseHandler(result.data, result.message));
   } catch (error) {
     next(error);

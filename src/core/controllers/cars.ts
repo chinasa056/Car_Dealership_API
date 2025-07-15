@@ -14,90 +14,71 @@ import {
   ICar,
 } from "src/core/interfaces/car";
 import { Types } from "mongoose";
+import cloudinary from "../config/cloudinary";
 
-// export const processCreateCar = async (
-//   body: ICar,
-//   userId: string,
-//   categoryId: any
-// ): Promise<CreateCarResponse> => {
-//   const manager = await Manager.findById(userId);
-//   if (!manager) {
-//     throw new CustomError("Manager not found", ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
-//   };
 
-//   const categoryExists = await Category.findById(categoryId);
-//   if (!categoryExists) {
-//     throw new CustomError("Category not found", ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
-//   };
-
-//   const newCar = new Car({
-//     category: categoryExists._id,
-//       brand: body.brand,
-//       carModel: body.carModel,
-//       price: body.price,
-//       year: body.year
-//   });
-
-//   await newCar.save();
-
-//   return {
-//     message: "Car created successfully",
-//     data: newCar,
-//   };
-// };
-
-// export const processCreateCar = async (
-//   body: CreateCarDTO,
-//   userId: string,
-//   categoryId: string
-// ): Promise<CreateCarResponse> => {
-//   const manager = await Manager.findById(userId);
-//   if (!manager) {
-//     throw new CustomError("Manager not found", ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
-//   }
-
-//   const categoryExists = await Category.findById(categoryId);
-//   if (!categoryExists) {
-//     throw new CustomError("Category not found", ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
-//   }
-
-//   const newCar = new Car({
-//     brand: body.brand,
-//     carModel: body.carModel,
-//     price: body.price,
-//     year: body.year,
-//     category: categoryExists._id,
-//     available: true // explicitly set it, since it's not in body
-//   });
-
-//   await newCar.save();
-
-//   return {
-//     message: "Car created successfully",
-//     data: newCar,
-//   };
-// };
 export const processCreateCar = async (
   body: ICar,
   userId: string,
-  categoryId: Types.ObjectId
+  categoryId: Types.ObjectId,
+  files: Express.Multer.File[]
 ): Promise<CreateCarResponse> => {
   const manager = await Manager.findById(userId);
   if (!manager) {
-    throw new CustomError("Manager not found", ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
-  };
-    const categoryExists = await Category.findOne({ _id: categoryId });
+    throw new CustomError(
+      "Manager not found",
+      ErrorCode.NOT_FOUND,
+      HttpStatus.NOT_FOUND
+    );
+  }
 
-    if (!categoryExists) {
-      throw new CustomError("Category not found", ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
-    };
 
+  const categoryExists = await Category.findById(categoryId);
+  if (!categoryExists) {
+    throw new CustomError(
+      "Category not found",
+      ErrorCode.NOT_FOUND,
+      HttpStatus.NOT_FOUND
+    );
+  }
+  
+  if (!files || files.length === 0) {
+    throw new CustomError(
+      "Please upload at least one car image",
+      ErrorCode.BAD_REQUEST,
+      HttpStatus.BAD_REQUEST
+    );
+  }
+
+  const uploadedImages: { imageUrl: string; imagePublicId: string }[] = [];
+
+  for (const file of files) {
+    const result = await cloudinary.uploader.upload_stream(
+      { resource_type: "image", folder: "car_dealership/cars" },
+      (error, result) => {
+        if (error || !result) {
+          throw new CustomError(
+            `Cloudinary upload failed: ${error?.message || "Unknown error"}`,
+            ErrorCode.SERVER_ERROR,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        }
+        uploadedImages.push({
+          imageUrl: result.secure_url,
+          imagePublicId: result.public_id,
+        });
+      }
+    );
+  }
+
+  // ✅ Create Car
   const newCar = new Car({
     category: categoryId,
     brand: body.brand,
     carModel: body.carModel,
     price: body.price,
-    year: body.year
+    year: body.year,
+    images: uploadedImages,
   });
 
   await newCar.save();
@@ -107,6 +88,7 @@ export const processCreateCar = async (
     data: newCar,
   };
 };
+
 
 export const processUpdateCar = async (
   id: string,

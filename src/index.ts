@@ -22,12 +22,14 @@ app.use(
   })
 );
 
+const appVersion = "/api/v1";
+
 app.use(compression());
 app.use(express.json());
-app.use("/api/v1/customers", userRoutes);
-app.use("/api/v1/managers", managerRoutes);
-app.use("/api/v1/categories", categoryRoute);
-app.use("/api/v1/cars", carRoute);
+app.use(`${appVersion}/customers`, userRoutes);
+app.use(`${appVersion}/managers`, managerRoutes);
+app.use(`${appVersion}/categories`, categoryRoute);
+app.use(`${appVersion}/cars`, carRoute);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err) {

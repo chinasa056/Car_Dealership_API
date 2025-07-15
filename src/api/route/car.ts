@@ -1,18 +1,27 @@
-import { Router } from "express";
+import { NextFunction, Router } from "express";
 import * as RequestHandler from '../requestHandlers/cars';
 import { authenticate, authorizeManager } from "../middleware/authentication";
 import { createCarValidator, updateCarValidator } from "src/core/validation/car";
 const router = Router();
+import upload from "src/core/utils/multer";
+import { asyncHandler } from "src/core/utils/asyncHandler";
 
-router.post('/:categoryId', authenticate, authorizeManager, createCarValidator, RequestHandler.createCar);
+router.post(
+  '/cars/:categoryId',
+  authenticate,
+  authorizeManager,
+  upload.array('images', 5), 
+  createCarValidator, 
+  asyncHandler(RequestHandler.createCar)
+);
 
-router.get('/:id', authenticate, RequestHandler.getCarById);
+router.get('/:id', authenticate, asyncHandler(RequestHandler.getCarById));
 
-router.patch('/:id', authenticate, authorizeManager,updateCarValidator, RequestHandler.updateCar);
+router.patch('/:id', authenticate, authorizeManager,updateCarValidator, asyncHandler(RequestHandler.updateCar));
 
-router.delete('/:id', authenticate, authorizeManager, RequestHandler.deleteCar);
+router.delete('/:id', authenticate, authorizeManager, asyncHandler(RequestHandler.deleteCar));
 
-router.get('/', authenticate, RequestHandler.getAllCars)
+router.get('/', authenticate, asyncHandler(RequestHandler.getAllCars));
 
 
 export default router

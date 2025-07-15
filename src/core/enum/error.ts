@@ -22,5 +22,6 @@ export enum ErrorCode {
   AUTHENTICATION_ERROR = 'authentication_error',
   TOKEN_EXPIRED = 'token_expired',
   DUPLICATE_KEY = 'duplicate_key',
-  REQUEST_VALIDATION = 'request_validation'
+  REQUEST_VALIDATION = 'request_validation',
+  SERVER_ERROR = "SERVER_ERROR"
 };

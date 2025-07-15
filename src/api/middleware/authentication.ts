@@ -7,22 +7,36 @@ import { CustomError } from "src/core/error/CustomError";
 import { Customer } from "src/core/models/customer";
 import { Manager } from "src/core/models/manager";
 
+export interface AuthenticatedUser {
+  userId: string;
+  email: string;
+  role?: 'manager' | 'customer';
+}
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: AuthenticatedUser;
+    }
+  }
+}
+
 interface JwtPayload {
   user: {
     userId: string;
     email: string;
     role?:string;
   };
-}
+};
+
 
 export const authenticate = async (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
-
     if (!token) {
       throw new CustomError(
         "Authorization denied. No token provided",
@@ -30,13 +44,15 @@ export const authenticate = async (
         HttpStatus.UNAUTHORIZED
       );
     }
-    const {user} = jwt.verify(token, setting.jwt.secret) as JwtPayload;
+
+    const { user } = jwt.verify(token, setting.jwt.secret) as JwtPayload;
+
     let authUser;
-    
-    if (user && user.userId) {
-      authUser = await Customer.findOne({ _id: user.userId });
+
+    if (user?.userId) {
+      authUser = await Customer.findById(user.userId);
       if (!authUser) {
-        authUser = await Manager.findOne({ _id: user.userId })
+        authUser = await Manager.findById(user.userId);
         if (!authUser) {
           throw new CustomError(
             "Authorization denied. User not found",
@@ -47,7 +63,18 @@ export const authenticate = async (
       }
     };
 
-    res.locals.user = authUser
+    req.user = {
+      userId: user.userId,
+      email: user.email,
+      role: user.role === "manager" || user.role === "customer"
+        ? user.role
+        : authUser instanceof Manager
+        ? "manager"
+        : authUser instanceof Customer
+        ? "customer"
+        : undefined,
+    };
+
     next();
   } catch (error) {
     if (error instanceof TokenExpiredError) {
@@ -69,12 +96,9 @@ export const authorizeManager = (
   res: Response,
   next: NextFunction
 ): void => {
-  const user = res.locals.user;
-  if (!user || user.role !== 'manager') {
-     res.status(403).json({ message: 'Access denied: Manager role required' });
-     return
+  if (!req.user || req.user.role !== "manager") {
+    res.status(403).json({ message: "Access denied: Manager role required" });
+    return;
   }
-
   next();
 };
-

@@ -1,13 +1,18 @@
 import { Types, Document } from "mongoose";
 
 export interface ICar extends Document {
-    brand: string;
-    carModel: string;
-    price: number;
-    year: number;
-    available: boolean;
-    category: Types.ObjectId;
-};
+  brand: string;
+  carModel: string;
+  price: number;
+  year: number;
+  available: boolean;
+  category: Types.ObjectId;
+  images: {
+    imageUrl: string;
+    imagePublicId: string;
+  }[];
+}
+
 
 // src/interfaces/dto/CreateCarDTO.ts
 export interface CreateCarDTO {
@@ -15,7 +20,13 @@ export interface CreateCarDTO {
   carModel: string;
   price: number;
   year: number;
+  category: string; 
+  images?: {
+    imageUrl: string;
+    imagePublicId: string;
+  }[];
 }
+
 
 
 export interface UpdateCarRequest {
