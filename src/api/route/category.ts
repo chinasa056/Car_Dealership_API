@@ -2,15 +2,17 @@ import { Router } from 'express';
 import * as RequestHandler from '../requestHandlers/category';
 import { authenticate, authorizeManager } from '../middleware/authentication';
 import { createCategoryValidator } from 'src/core/validation/category';
+import { asyncHandler } from 'src/core/utils/asyncHandler';
 
 const router = Router();
 
-router.post('/', authenticate, authorizeManager,createCategoryValidator ,RequestHandler.createCategory);
+router.post('/', authenticate, authorizeManager, createCategoryValidator, asyncHandler(RequestHandler.createCategory));
 
-router.get('/', RequestHandler.getAllCategories);
+router.get('/', asyncHandler(RequestHandler.getAllCategories));
 
-router.get('/:categoryId', RequestHandler.getCategoryCarsHandler)
+router.get('/:categoryId', asyncHandler(RequestHandler.getCategoryCarsHandler));
 
-router.delete('/:id', authenticate, authorizeManager, RequestHandler.deleteCategory);
+router.delete('/:id', authenticate, authorizeManager, asyncHandler(RequestHandler.deleteCategory));
 
 export default router;
+ 
