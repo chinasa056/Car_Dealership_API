@@ -5,11 +5,23 @@ import { CustomError } from '../error/CustomError';
 import { ErrorCode } from '../enum/error';
 import { HttpStatus } from '../enum/httpCode';
 import { Category } from '../models/category';
+import { Customer } from '../models/customer';
 
 export const processPurchaseCar = async (
+  body: any, 
   carId: string,
   buyerId: Types.ObjectId
 ) => {
+
+    const user = await Customer.findById(buyerId);  
+    if(!user) {
+      throw new CustomError(
+        'User not found',
+        ErrorCode.NOT_FOUND,
+        HttpStatus.NOT_FOUND
+      ); 
+    };
+
   const car = await Car.findById(carId).populate('category');
 
   if (!car) {
@@ -18,7 +30,7 @@ export const processPurchaseCar = async (
       ErrorCode.NOT_FOUND,
       HttpStatus.NOT_FOUND
     );
-  }
+  };
 
   if (!car.available) {
     throw new CustomError(
@@ -26,9 +38,8 @@ export const processPurchaseCar = async (
       ErrorCode.BAD_REQUEST,
       HttpStatus.BAD_REQUEST
     );
-  }
+  };
 
-  // If you have a quantity field:
   if ('quantity' in car && typeof car.quantity === 'number') {
     if (car.quantity < 1) {
       throw new CustomError(
@@ -44,9 +55,8 @@ export const processPurchaseCar = async (
       car.available = false;
     }
   } else {
-    // If you do not use quantity, just mark unavailable
     car.available = false;
-  }
+  };
 
   await car.save();
 const category = await Category.findById(car.category._id);
@@ -63,8 +73,9 @@ const category = await Category.findById(car.category._id);
     car: car._id,
     purchaseDate: new Date(),
     priceSold: car.price,
+    quantity: body.quantity || 1,
     brand: car.brand,
-    model: car.carModel,
+    carModel: car.carModel,
     categoryId: category._id,
     categoryName: category.name,
     status: 'Pending',

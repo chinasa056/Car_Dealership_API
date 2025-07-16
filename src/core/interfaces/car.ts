@@ -5,6 +5,7 @@ export interface ICar extends Document {
   carModel: string;
   price: number;
   year: number;
+  quantity: number;
   available: boolean;
   category: Types.ObjectId;
   images: {

@@ -12,6 +12,7 @@ import managerRoutes from "./api/route/manager";
 import { errorHandler } from "./api/middleware/handleErrors";
 import categoryRoute from './api/route/category'
 import carRoute from './api/route/car'
+import purchaseRoute from './api/route/purchase';
 
 const app = express();
 const port = setting.port;
@@ -30,6 +31,7 @@ app.use(`${appVersion}/customers`, userRoutes);
 app.use(`${appVersion}/managers`, managerRoutes);
 app.use(`${appVersion}/categories`, categoryRoute);
 app.use(`${appVersion}/cars`, carRoute);
+app.use(`${appVersion}/purchases`, purchaseRoute);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err) {

@@ -21,6 +21,11 @@ const purchaseSchema = new Schema<IPurchase>(
             type: Number,
             required: true,
         },
+        quantity: {
+            type: Number,
+            required: true,
+            min: 1,
+        },
         brand: {
             type: String,
             required: true,

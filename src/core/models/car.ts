@@ -8,6 +8,7 @@ const carSchema = new Schema<ICar>(
     carModel: { type: String, required: true },
     price: { type: Number, required: true },
     year: { type: Number, required: true },
+    quantity: { type: Number, default: 1 },
     available: { type: Boolean, default: true },
     category: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
     images: [

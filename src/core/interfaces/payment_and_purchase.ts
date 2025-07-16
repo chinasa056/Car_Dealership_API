@@ -5,6 +5,7 @@ export interface IPurchase extends Document {
   car: Types.ObjectId;
   purchaseDate: Date;
   priceSold: number;
+  quantity: number;
   brand: string;
   carModel: string;
   categoryId: Types.ObjectId;

@@ -71,7 +71,7 @@ export const processCreateCar = async (
     );
   }
 
-  // ✅ Create Car
+
   const newCar = new Car({
     category: categoryId,
     brand: body.brand,
