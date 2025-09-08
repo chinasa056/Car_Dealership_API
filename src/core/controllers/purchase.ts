@@ -86,3 +86,7 @@ const category = await Category.findById(car.category._id);
     data: purchase,
   };
 };
+
+export const getPurchaseDetails = async (purchaseId: string) => {
+  
+}

@@ -9,13 +9,13 @@ export interface IPurchase extends Document {
   brand: string;
   carModel: string;
   categoryId: Types.ObjectId;
-  categoryName: string;   
+  categoryName: string;
   status: "Pending" | "Completed" | "Failed";
 };
 
 
 export interface IPayment extends Document {
-  purchase: Types.ObjectId; 
+  purchase: Types.ObjectId;
   email: string;
   customerName: string;
   amount: number;
@@ -24,3 +24,25 @@ export interface IPayment extends Document {
   provider: "Paystack";
   createdAt: Date;
 };
+
+export interface PaymentInitializationResponse {
+  message: string;
+  data: {
+    authorization_url: string;
+    reference: string;
+    transactionDetails: IPayment;
+  };
+}
+
+export interface PaymentVerificationResponse {
+  message: string;
+  data?: {
+    payment: IPayment;
+    purchase?: IPurchase;
+  };
+}
+
+export interface getDetailsResponse {
+  message: string;
+  data: {}
+}

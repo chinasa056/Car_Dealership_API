@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
 import * as CarController from "src/core/controllers/cars";
 import { responseHandler } from "src/core/helpers/utilities";
+import { getCache } from "src/core/utils/cache";
 
 export const createCar = async (
   req: Request,
@@ -55,6 +56,11 @@ export const deleteCar = async (req: Request, res: Response, next: NextFunction)
 
 export const getCarById = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const cacheKey = `car:${req.params.id}`;
+    const cachedCar = await getCache(cacheKey);
+    if(cachedCar){
+      return res.status(200).json(responseHandler(JSON.parse(cacheKey), "Car fetched successfully"));
+    }
     const result = await CarController.processGetCarById(req.params.id);
     res.status(201).json(responseHandler(result.data, result.message));
   } catch (error) {

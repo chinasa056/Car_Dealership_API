@@ -15,7 +15,7 @@ export const purchaseCarHandler = async (
     const buyer = req.user?.userId; 
     const buyerId = new mongoose.Types.ObjectId(buyer);
 
-    const result = await processPurchaseCar(carId, buyerId);
+    const result = await processPurchaseCar(req.body,carId, buyerId, );
 
     return res.status(201).json(responseHandler(result.data, result.message));
   } catch (error) {

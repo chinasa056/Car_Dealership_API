@@ -54,7 +54,7 @@ export const processCreateCar = async (
 
   for (const file of files) {
     const result = await cloudinary.uploader.upload_stream(
-      { resource_type: "image", folder: "car_dealership/cars" },
+      { resource_type: "image", folder: "car_dealership/cars" }, 
       (error, result) => {
         if (error || !result) {
           throw new CustomError(
@@ -70,15 +70,11 @@ export const processCreateCar = async (
       }
     );
   }
-
-
   const newCar = new Car({
+    ...body,
     category: categoryId,
-    brand: body.brand,
-    carModel: body.carModel,
-    price: body.price,
-    year: body.year,
     images: uploadedImages,
+    createdBy: userId,
   });
 
   await newCar.save();

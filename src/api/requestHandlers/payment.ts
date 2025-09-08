@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import { any } from "joi";
 import mongoose from "mongoose";
 import { processPaymentInitialization } from "src/core/controllers/payment";
 import { responseHandler } from "src/core/helpers/utilities";
@@ -15,7 +14,7 @@ export const initializePayment = async (req: Request, res: Response, next: NextF
         const purchase = new mongoose.Types.ObjectId(purchaseId);
         const result = await processPaymentInitialization(purchase, userId);
 
-        res.status(201).json(responseHandler(result.message, result.data));
+        res.status(201).json(responseHandler( result.data,result.message));
     } catch (error) {
         next(error);
     }
