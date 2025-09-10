@@ -3,10 +3,6 @@
 <details>
 <summary> <strong>future feautures to add </strong> </summary>
 
-Perfect — improving your project is one of the best ways to turn that "no" into fuel for your next "yes."
-
-Here are **feature suggestions** you can add to your **Car Dealership API** to make it more impressive, scalable, and real-world-ready:
-
 ---
 
 ### 🚘 **Core Business Features**
@@ -99,28 +95,18 @@ Here are **feature suggestions** you can add to your **Car Dealership API** to m
 
 * Serve full API docs at `/docs`.
 
----
-
-If you'd like, I can help **prioritize** these features based on:
-
-* What will **impress employers**
-* What’s easiest to add first
-* What improves your portfolio fastest
-
-Want to start from the top of that list, or pick based on your goal (e.g., impress recruiters, simulate a real product, deepen your skills)?
 
 </details>
 
 <details>
 <summary><strong> rough proposed endpoint </strong></summary>
-Great strategy. To **impress recruiters**, you want to show that:
 
-* You understand real business flows
-* You can build production-ready APIs
-* You prioritize security, scalability, and clarity
-* You don’t just "code" — you "engineer"
+* Do understand real business flows
+*  build production-ready APIs
+*  prioritize security, scalability, and clarity
+*  don’t just "code" — you "engineer"
 
-Here’s a **prioritized list of features** to add to your Car Dealership API that will impress most recruiters:
+**prioritized list of features** to add to your Car Dealership API that will impress most recruiters:
 
 ---
 
@@ -189,9 +175,5 @@ Here’s a **prioritized list of features** to add to your Car Dealership API th
 10. **🧪 End-to-End Tests (Supertest + Jest)**
 
     * Especially on `/cars`, `/login`, `/purchase` routes
-
----
-
-Would you like to start with the **Car Purchase Flow** now? I can walk you through the schema, controller, route, and a sample response.
 
 </details>
