@@ -9,7 +9,9 @@ import { Customer } from '../models/customer';
 import { Types } from 'mongoose';
 import { ErrorCode } from '../enum/error';
 import { HttpStatus } from '../enum/httpCode';
-import { IPayment, PaymentInitializationResponse, PaymentVerificationResponse } from '../interfaces/payment_and_purchase';
+import { PaymentInitializationResponse, PaymentVerificationResponse } from '../interfaces/payment_and_purchase';
+import { Status } from '../enum/appEnum';
+import { Car } from '../models/car';
 
 export const processPaymentInitialization = async (purchaseId: Types.ObjectId, userId: string): Promise<PaymentInitializationResponse> => {
     const user = await Customer.findById(userId);
@@ -20,6 +22,7 @@ export const processPaymentInitialization = async (purchaseId: Types.ObjectId, u
             HttpStatus.NOT_FOUND
         )
     };
+
     const purchase = await Purchase.findById(purchaseId);
     if (!purchase) {
         throw new CustomError(
@@ -29,10 +32,8 @@ export const processPaymentInitialization = async (purchaseId: Types.ObjectId, u
         )
     };
 
-    const totalAmount = purchase.priceSold * purchase.quantity;
-
     const paymentDetails = {
-        amount: totalAmount,
+        amount: purchase.totalPrice * 100,
         email: user.email,
     };
 
@@ -46,7 +47,7 @@ export const processPaymentInitialization = async (purchaseId: Types.ObjectId, u
         purchase: purchaseId,
         email: user.email,
         customerName: user.name,
-        amunt: totalAmount,
+        amunt: purchase.totalPrice,
         rference: data.reference,
         status: "pending",
         provider: "Paystack",
@@ -57,9 +58,9 @@ export const processPaymentInitialization = async (purchaseId: Types.ObjectId, u
     return {
         message: "Payment initialization successful",
         data: {
-        authorization_url: data?.authorization_url,
-        reference: data?.reference,
-        transactionDetails: payment
+            authorization_url: data?.authorization_url,
+            reference: data?.reference,
+            transactionDetails: payment
         }
     };
 
@@ -101,7 +102,14 @@ export const verifyPayment = async (reference: string): Promise<PaymentVerificat
 
         };
     };
-
+    const car = await Car.findById(purchase.car);
+    if (!car) {
+        throw new CustomError(
+            "Car not found for this purchase",
+            ErrorCode.NOT_FOUND,
+            HttpStatus.NOT_FOUND
+        );
+    };
 
     const user = await Customer.findById(purchase.buyer);
     if (!user) {
@@ -121,37 +129,44 @@ export const verifyPayment = async (reference: string): Promise<PaymentVerificat
 
     if (data?.status && data.data?.status === "success") {
         payment.status = "Success";
-        purchase.status = "Completed";
-        await payment.save();
-        await purchase.save();
-        return {
-            message: "Payment verified successfully",
-            data: {
-                payment,
-                purchase,
-            }
-        };
+        purchase.status = Status.COMPLETED;
 
-    } else if (data?.status && data.data?.status !== "success") {
-        payment.status = "Failed";
-        purchase.status = "Failed";
-
-        await payment.save();
-        await purchase.save();
-
-        return {
-            message: "Payment Failed please try again later",
-            data: {
-            payment
-            }
-        };
+        car.quantity -= 1;
+        if (car.quantity <= 0) {
+            car.available = false;
+        } else {
+        car.available = false;
+    };
+    await payment.save();
+    await purchase.save();
+    return {
+        message: "Payment verified successfully",
+        data: {
+            payment,
+            purchase,
+        }
     };
 
-    // Fallback return statement to satisfy all code paths
+} else if (data?.status && data.data?.status !== "success") {
+    payment.status = "Failed";
+    purchase.status = Status.FAILED;
+
+    await payment.save();
+    await purchase.save();
+
     return {
-        message: "Unable to verify payment",
+        message: "Payment Failed please try again later",
         data: {
             payment
         }
     };
+};
+
+// Fallback return statement to satisfy all code paths
+return {
+    message: "Unable to verify payment",
+    data: {
+        payment
+    }
+};
 }

@@ -62,6 +62,47 @@
    * Top 5 most viewed or purchased cars.
    * Monthly car sales chart.
 
+```
+Real-world metrics a dealership owner would care about
+
+Here’s a solid list of insights they might want:
+
+✅ Revenue & Sales
+
+Total revenue this month/year
+
+Number of cars sold per month/year
+
+Top-selling models / brands
+
+Average sale price
+
+Sales growth rate (MoM, YoY)
+
+✅ Inventory Health
+
+Current stock levels per category
+
+Aging inventory (cars sitting unsold too long)
+
+Price range distribution (low-end, mid, high)
+
+✅ Customer Insights
+
+Which customers buy the most
+
+Repeat buyers vs new buyers
+
+Preferred car types
+
+✅ Best Sellers
+
+Most sold car model
+
+Best selling brand
+
+Seasonal trends (e.g., SUVs sell better in winter)
+```
 ---
 
 ### ⚙️ **Dev / System Features**

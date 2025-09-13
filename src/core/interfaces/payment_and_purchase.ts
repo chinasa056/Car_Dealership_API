@@ -1,4 +1,5 @@
 import { Types, Document } from "mongoose";
+import { PaymentOption, Status } from "../enum/appEnum";
 
 export interface IPurchase extends Document {
   buyer: Types.ObjectId;
@@ -6,11 +7,15 @@ export interface IPurchase extends Document {
   purchaseDate: Date;
   priceSold: number;
   quantity: number;
+  totalPrice: number;
   brand: string;
   carModel: string;
   categoryId: Types.ObjectId;
   categoryName: string;
-  status: "Pending" | "Completed" | "Failed";
+  status: Status
+  paymentOption?: PaymentOption;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 

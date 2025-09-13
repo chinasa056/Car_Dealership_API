@@ -25,3 +25,4 @@ export enum ErrorCode {
   REQUEST_VALIDATION = 'request_validation',
   SERVER_ERROR = "SERVER_ERROR"
 };
+
