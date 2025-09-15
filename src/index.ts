@@ -13,6 +13,7 @@ import { errorHandler } from "./api/middleware/handleErrors";
 import categoryRoute from './api/route/category'
 import carRoute from './api/route/car'
 import purchaseRoute from './api/route/purchase';
+import installmentRoute from './api/route/installment'
 import { getRedisClient } from './core/utils/redis';
 
 const app = express();
@@ -33,6 +34,7 @@ app.use(`${appVersion}/managers`, managerRoutes);
 app.use(`${appVersion}/categories`, categoryRoute);
 app.use(`${appVersion}/cars`, carRoute);
 app.use(`${appVersion}/purchases`, purchaseRoute);
+app.use(`${appVersion}/installments`, installmentRoute);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err) {

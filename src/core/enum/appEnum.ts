@@ -8,3 +8,11 @@ export enum Status {
     COMPLETED = 'Completed',
     FAILED = 'Failed'
 }
+
+export enum InstallmentStatus{
+    ACTIVE = 'Active',
+    COMPLETED = 'Completed',
+    DEFAULTED = 'Defaulted',
+    EXTENDED = 'Extended',
+    PENDING = 'Pending'
+}

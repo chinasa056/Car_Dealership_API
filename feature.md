@@ -171,8 +171,8 @@ Perfect — you’re already thinking about this the **right way** 👌. Let’s
 * `userId`
 * `totalAmount`
 * `remainingBalance`
-* `installmentCount` (3, 6, 12)
-* `installmentAmount`
+* `numberOfMonths` (3, 6, 12)
+* `monthlyAmount`
 * `status` ("active", "completed", "defaulted", "extended")
 * `startDate`
 * `endDate`

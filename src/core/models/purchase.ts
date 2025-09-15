@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, models } from "mongoose";
 import { IPurchase } from "../interfaces/payment_and_purchase";
 import { PaymentOption, Status } from "../enum/appEnum";
 
@@ -63,4 +63,4 @@ const purchaseSchema = new Schema<IPurchase>(
     { timestamps: true }
 );
 
-export const Purchase = model<IPurchase>("Purchase", purchaseSchema);
+export const Purchase = models.Purchase || model<IPurchase>("Purchase", purchaseSchema);

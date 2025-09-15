@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, models } from 'mongoose';
 import { ICustomer } from '../interfaces/customer';
 
 const customerSchema = new Schema<ICustomer>({
@@ -11,4 +11,4 @@ const customerSchema = new Schema<ICustomer>({
   timestamps: true
 });
 
-export const Customer = model<ICustomer>('Customer', customerSchema);
+export const Customer = models.Customer || model<ICustomer>('Customer', customerSchema);
