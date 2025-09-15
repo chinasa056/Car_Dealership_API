@@ -15,7 +15,7 @@ export interface InstallmentPlanInterface extends Document {
 
 export interface InstallmentPaymentInterface extends Document {
     installmentPlanId: Types.ObjectId;
-    nextDueDate: Date;
+    nextDueDate: Date; 
     amount: number;
     isPaid: boolean;
     paymentDate?: Date;
@@ -34,3 +34,4 @@ export interface CreatePlanResponse {
         endsOn: Date
     };
 }
+

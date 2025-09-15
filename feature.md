@@ -33,7 +33,7 @@ Instead of paying the full price of a car at once, users can split the payment i
    * Amount per installment
    * Due dates
 4. User pays the **first installment immediately**.
-5. System updates purchase record → “In-progress Installment Purchase”.
+5. System updates purchase record 
 6. Cron job / scheduled task monitors **upcoming due dates**.
 7. Once all installments are completed → car is marked as fully purchased.
 
@@ -48,32 +48,6 @@ Instead of paying the full price of a car at once, users can split the payment i
   * Grace period (e.g. 7 days).
   * After grace → purchase is marked as defaulted.
 * **Completion**: Ownership only transfers after the last installment is cleared.
-
----
-
-### 4. **Database Design**
-
-We’ll need **two models** tied together:
-
-#### `InstallmentPlan` (per purchase)
-
-* `id`
-* `purchaseId` (FK to Purchase)
-* `userId`
-* `totalAmount`
-* `installmentCount` (3, 6, 12)
-* `installmentAmount`
-* `status` ("active", "completed", "defaulted")
-
-#### `InstallmentPayment` (individual records)
-
-* `id`
-* `installmentPlanId` (FK)
-* `dueDate`
-* `amount`
-* `isPaid`
-* `paymentDate` (nullable)
-
 ---
 
 ### 5. **Controller Workflow**
@@ -82,45 +56,16 @@ We’ll need **two models** tied together:
 * **Payment Controller** → Handles installment payments for subsequent months.
 * **Cron Job** → Runs daily/weekly to check due dates, send reminders, and update defaulted plans.
 
----
-
-### 6. **Features to Document**
-
-* Flexible payment options (full or installment).
-* Auto-generated payment schedule.
-* Automatic status updates (active → completed or defaulted).
-* Grace period handling.
-* Email/notification reminders for upcoming dues.
-
----
-
-### 7. **Tech Stack Fit**
-
-* **Backend**: Node.js + Express + TypeScript
-* **DB**: MongoDB/Mongoose (relations via `purchaseId` and `installmentPlanId`)
-* **Payments**: Integration with your existing provider (KoraPay or similar).
-* **Cron**: `node-cron` or external scheduler for due checks.
-
----
-
-👉 With this, you’ll have a **clear roadmap** for installment purchases that you can both document and start implementing step by step.
-
-Do you want me to **draft a schema design (Mongoose + TypeScript interfaces)** for `InstallmentPlan` and `InstallmentPayment` so you have a concrete base before coding?
-
-
-Perfect — you’re already thinking about this the **right way** 👌. Let’s align and refine so the flow is airtight before we move on to implementation.
-
----
 
 ## 🔄 Walkthrough of the Installmental Purchase Flow
 
 ### 1. **User Journey**
 
 * **Step 1:** User picks a car.
-* **Step 2:** User chooses installment option → **3, 6, or 12 months**.
+* **Step 2:** User is fills out purchase details, asked to choose payment method. if user picks full payment,proceed to checkout. if User chooses installment option → **3, 6, or 12 months**.
 * **Step 3:** System calculates:
 
-  * **Installment amount = Car Price ÷ Number of months**
+* **Installment amount = Car Price ÷ Number of months**
   * Returns breakdown (amount per month, total duration, first payment due now).
 * **Step 4:** User pays the **first installment (down payment)** immediately.
 * **Step 5:** Payment schedule begins — **next due date = 30 days after first payment**.
@@ -162,7 +107,7 @@ Perfect — you’re already thinking about this the **right way** 👌. Let’s
 
 ---
 
-### 5. **Database Design (Your Proposal is Solid ✅)**
+### 5. **Database Design 
 
 #### `InstallmentPlan`
 
@@ -325,3 +270,5 @@ Features  Documentation
 and **`/payment/initialize` only needs `purchaseId`** because all other details (price, plan, buyer) are already linked in DB.
 
 </details>
+
+
