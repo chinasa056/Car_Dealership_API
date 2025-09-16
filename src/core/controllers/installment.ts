@@ -34,7 +34,7 @@ export const createInstallmentPlan = async (
   const numberOfMonths = body.numberOfMonths;
   if (![3, 6, 12].includes(numberOfMonths)) {
     throw new CustomError(
-      "Invalid number of months",
+      "Please select 3, 6 or 12 months",
       ErrorCode.BAD_REQUEST,
       HttpStatus.BAD_REQUEST
     );

@@ -3,11 +3,7 @@
 <details>
 <summary><strng> Installmental Payment </strong></summary>
 
-Perfect — installmental purchase will make your project stand out a lot more 👌. Let’s plan it step by step so you can document it well and then implement.
-
----
-
-## 📌 Installmental Purchase Plan
+##  Installmental Purchase Plan
 
 ### 1. **Concept**
  
@@ -24,7 +20,7 @@ Instead of paying the full price of a car at once, users can split the payment i
 1. User selects a car.
 2. At checkout → user chooses **Payment Type**:
 
-   * Full payment
+   * Full payment => proceed to checkout
    * Installmental (3, 6, 12 months)
 3. System generates an **installment plan** with:
 
@@ -168,7 +164,8 @@ Features  Documentation
 </details>
 
 <details>
- break the process into steps and endpoints, saving state as I go, so that when I finally hit checkout/payment I'll only need `purchaseId + purchaseAmount` because everything else is already collected.
+ breaking the process into steps and endpoints,
+ this isgoingtobe designed to save state as I go, so that when I finally hit checkout/payment I'll only need `purchaseId` because everything else is already collected.
 
  break it down clearly for **implementation planning**:
 

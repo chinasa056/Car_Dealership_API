@@ -21,11 +21,13 @@ export interface IPurchase extends Document {
 
 export interface IPayment extends Document {
   purchase: Types.ObjectId;
+  installmentPaymentId?: Types.ObjectId,
   email: string;
   customerName: string;
   amount: number;
   reference: string;
   status: "Pending" | "Success" | "Failed";
+  paymentType: PaymentOption;
   provider: "Paystack";
   createdAt: Date;
 };
