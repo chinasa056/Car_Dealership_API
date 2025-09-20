@@ -1,7 +1,7 @@
 // routes/purchaseRoutes.ts
 import { Router } from 'express';
 import { authenticate } from '../middleware/authentication';
-import { asyncHandler } from 'src/core/utils/asyncHandler';
+import { asyncHandler } from 'src/core/helpers/asyncHandler';
 import * as RequestHandler from '../requestHandlers/purchase';
 
 const router = Router();

@@ -4,7 +4,7 @@ import { authenticate, authorizeManager } from "../middleware/authentication";
 import { createCarValidator, updateCarValidator } from "src/core/validation/car";
 const router = Router();
 import upload from "src/core/utils/multer";
-import { asyncHandler } from "src/core/utils/asyncHandler";
+import { asyncHandler } from "src/core/helpers/asyncHandler";
 
 router.post(
   '/cars/:categoryId',

@@ -13,7 +13,7 @@ export function getRedisClient(): Redis {
       redisConfig = {
         host:  'localhost',
         port:  6379,
-        lazyConnect: true,
+        // lazyConnect: true,
       };
     } else {
       // Use cloud Redis configuration for production or other environments

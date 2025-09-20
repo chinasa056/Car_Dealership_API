@@ -2,7 +2,7 @@ import { Router } from 'express';
 import * as RequestHandler from '../requestHandlers/category';
 import { authenticate, authorizeManager } from '../middleware/authentication';
 import { createCategoryValidator } from 'src/core/validation/category';
-import { asyncHandler } from 'src/core/utils/asyncHandler';
+import { asyncHandler } from 'src/core/helpers/asyncHandler';
 
 const router = Router();
 

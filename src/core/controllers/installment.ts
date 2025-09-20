@@ -7,7 +7,11 @@ import { Customer } from "../models/customer";
 import { InstallmentPlan } from "../models/installmentPlan";
 import { Purchase } from "../models/purchase";
 import { InstallmentPayment } from "../models/installmentPayment"; // Import the InstallmentPayment model
-
+import { differenceInDays } from 'date-fns';
+import { sendMail } from '../utils/email'; // Assuming your sendMail function is here
+import { onDuePaymentReminder } from "../utils/templates/dueDateReminder";
+import { upcomingPaymentReminder } from "../utils/templates/upcomingPaymentReminder";
+import { overduePaymentNotification } from "../utils/templates/gracePeriodTemplate";
 export const createInstallmentPlan = async (
   purchaseID: string,
   userId: string,
@@ -105,4 +109,111 @@ export const createInstallmentPlan = async (
       endsOn: installmentPlan.endDate,
     },
   };
+};
+
+const GRACE_PERIOD_DAYS = 7;
+const PENALTY_RATE = 0.003; // 0.3%
+
+export const sendPaymentReminders = async () => {
+    try {
+        console.log('Running scheduled payment reminder job...');
+        const today = new Date();
+
+        // Find all unpaid installment payments
+        const unpaidPayments = await InstallmentPayment.find({
+            isPaid: false,
+        })
+        .populate({
+            path: 'installmentPlanId',
+            populate: {
+                path: 'purchaseId',
+                model: 'Purchase',
+                populate: [{ path: 'buyer', model: 'Customer' }, { path: 'car', model: 'Car' }]
+            }
+        });
+
+        for (const payment of unpaidPayments) {
+            const plan: any = payment.installmentPlanId;
+            const purchase: any = plan.purchaseId;
+            const customer: any = purchase.buyer;
+            const car: any = purchase.car;
+
+            if (!customer || !purchase || !car) {
+                console.error(`Skipping reminder for payment ${payment._id}: Related data not found.`);
+                continue;
+            }
+
+            const daysUntilDue = differenceInDays(payment.nextDueDate, today);
+            const paymentLink = `https://your-car-dealership.com/payment/${payment._id}`; // Example link
+
+            // Determine which email to send
+            if (daysUntilDue === 5) {
+                // Send 5-day reminder
+                const emailHtml = upcomingPaymentReminder({
+                    firstName: customer.name.split(' ')[0], // Use first name
+                    monthlyAmount: payment.amount,
+                    carDetails: `${car.make} ${car.model}`,
+                    dueDate: payment.nextDueDate,
+                    paymentLink,
+                    companyName: 'Your Company Name'
+                });
+                await sendMail({
+                    email: customer.email,
+                    subject: 'Your Installment Payment is Due Soon!',
+                    html: emailHtml
+                });
+
+            } else if (daysUntilDue === 0) {
+                // Send on-due-date reminder
+                const emailHtml = onDuePaymentReminder({
+                    firstName: customer.name.split(' ')[0],
+                    monthlyAmount: payment.amount,
+                    carDetails: `${car.make} ${car.model}`,
+                    dueDate: payment.nextDueDate,
+                    paymentLink,
+                    companyName: 'Your Company Name'
+                });
+                await sendMail({
+                    email: customer.email,
+                    subject: 'Your Installment Payment is Due Today!',
+                    html: emailHtml
+                });
+
+            } else if (daysUntilDue < -GRACE_PERIOD_DAYS && !payment.penaltyApplied) {
+                // Payment is overdue and penalty has not been applied
+                const penaltyAmount = payment.amount * PENALTY_RATE;
+                payment.amount += penaltyAmount; // Apply penalty to the payment amount
+                payment.penaltyApplied = true;
+                
+                const emailHtml = overduePaymentNotification({
+                    firstName: customer.name.split(' ')[0],
+                    originalAmount: payment.amount - penaltyAmount, // Pass original amount before penalty
+                    penaltyAmount,
+                    carDetails: `${car.make} ${car.model}`,
+                    paymentLink,
+                    companyName: 'Your Company Name'
+                });
+                
+                await sendMail({
+                    email: customer.email,
+                    subject: 'Action Required: Your Payment is Overdue',
+                    html: emailHtml
+                });
+                
+                // IMPORTANT: Update the records in the database
+                await payment.save();
+                
+                // Update the remaining balance on the main plan
+                const installmentPlan = await plan;
+                if (installmentPlan) {
+                    installmentPlan.remainingBalance += penaltyAmount;
+                    await installmentPlan.save();
+                }
+            }
+        }
+        console.log('Payment reminder job completed.');
+
+    } catch (error) {
+        console.error('Error during payment reminder job:', error);
+    }
 };

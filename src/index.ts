@@ -15,6 +15,7 @@ import carRoute from './api/route/car'
 import purchaseRoute from './api/route/purchase';
 import installmentRoute from './api/route/installment'
 import { getRedisClient } from './core/utils/redis';
+import { startPaymentCronJob } from './core/utils/node-cron';
 
 const app = express();
 const port = setting.port;
@@ -43,9 +44,10 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     next();
   }
 });
+startPaymentCronJob()
 
 const startServer = async () => {
-  await getRedisClient();
+  getRedisClient();
   await dbConnect();
   app.listen(port, () => {
     console.log(`server is listening on port: ${port}`);
