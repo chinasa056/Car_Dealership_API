@@ -14,5 +14,6 @@ export enum InstallmentStatus{
     COMPLETED = 'Completed',
     DEFAULTED = 'Defaulted',
     EXTENDED = 'Extended',
-    PENDING = 'Pending'
+    PENDING = 'Pending',
+    DEFAULTED_GRACE_PERIOD = 'Defaulted - Grace Period'
 }

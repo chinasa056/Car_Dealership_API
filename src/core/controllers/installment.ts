@@ -6,12 +6,13 @@ import { CreatePlanResponse } from "../interfaces/installment";
 import { Customer } from "../models/customer";
 import { InstallmentPlan } from "../models/installmentPlan";
 import { Purchase } from "../models/purchase";
-import { InstallmentPayment } from "../models/installmentPayment"; 
+import { InstallmentPayment } from "../models/installmentPayment";
 import { differenceInDays } from 'date-fns';
-import { sendMail } from '../utils/email'; 
+import { sendMail } from '../utils/email';
 import { onDuePaymentReminder } from "../utils/templates/dueDateReminder";
 import { upcomingPaymentReminder } from "../utils/templates/upcomingPaymentReminder";
 import { overduePaymentNotification } from "../utils/templates/gracePeriodTemplate";
+import { installmentPlanEnded } from "../utils/templates/requestOptions";
 
 export const createInstallmentPlan = async (
   purchaseID: string,
@@ -124,7 +125,7 @@ export const sendPaymentReminders = async () => {
       isPaid: false,
     }).populate('installmentPlanId');
 
-    //Loop through each unpaid payment
+    // Loop through each unpaid payment
     for (const payment of unpaidPayments) {
       const installmentPlan: any = payment.installmentPlanId;
 
@@ -147,11 +148,36 @@ export const sendPaymentReminders = async () => {
       const daysUntilDue = differenceInDays(payment.nextDueDate, today);
       const paymentLink = `https://wheelcom/payment/${payment._id}`;
 
-      // Check for and apply penalty
-      if (daysUntilDue < -GRACE_PERIOD_DAYS && !payment.penaltyApplied) {
-        const penaltyAmount = payment.amount * PENALTY_RATE;
+      // We check if today's date is after the plan's end date. If so, we mark it as defaulted and send the options email.
+      if (today > installmentPlan.endDate && installmentPlan.status !== InstallmentStatus.DEFAULTED) {
+        installmentPlan.status = InstallmentStatus.DEFAULTED;
+        await installmentPlan.save();
+
+        const emailHtml = installmentPlanEnded({
+          firstName: customer.name.split(' ')[0],
+          planName: `${car.brand} ${car.carModel} Plan`,
+          outstandingBalance: installmentPlan.remainingBalance,
+          startDate: installmentPlan.startDate,
+          endDate: installmentPlan.endDate,
+          refundLink: 'https://wheelcom/refund',
+          extensionLink: 'https://wheelcom/extension',
+          companyName: 'WheelCom Enterprises'
+        });
+        await sendMail({
+          email: customer.email,
+          subject: 'Action Required: Your Installment Plan Has Ended',
+          html: emailHtml
+        });
+      }
+      // This is check for individual missed payments, not end of the plan.
+      if (daysUntilDue < -GRACE_PERIOD_DAYS && !payment.penaltyApplied && installmentPlan.status !== InstallmentStatus.DEFAULTED_GRACE_PERIOD) {
+        const penaltyAmount = installmentPlan.monthlyAmount * PENALTY_RATE;
+
+        // Update both the payment and the overall plan's remaining balance
         payment.amount += penaltyAmount;
         payment.penaltyApplied = true;
+        installmentPlan.remainingBalance += penaltyAmount;
+        installmentPlan.status = InstallmentStatus.DEFAULTED_GRACE_PERIOD;
 
         const emailHtml = overduePaymentNotification({
           firstName: customer.name.split(' ')[0],
@@ -161,7 +187,6 @@ export const sendPaymentReminders = async () => {
           paymentLink,
           companyName: 'WheelCom Enterprises'
         });
-
         await sendMail({
           email: customer.email,
           subject: 'Action Required: Your Payment is Overdue',
@@ -169,19 +194,11 @@ export const sendPaymentReminders = async () => {
         });
 
         await payment.save();
-        installmentPlan.remainingBalance += penaltyAmount;
         await installmentPlan.save();
       }
 
-      // Check for defaulted status
-      if (daysUntilDue < -GRACE_PERIOD_DAYS && installmentPlan.status !== InstallmentStatus.DEFAULTED) {
-        installmentPlan.status = InstallmentStatus.DEFAULTED;
-        await installmentPlan.save();
-        console.log(`Installment plan for ${customer.name} defaulted.`);
-      }
-
-      // Send reminders if the payment is NOT defaulted
-      if (installmentPlan.status !== InstallmentStatus.DEFAULTED) {
+      // Send reminders for upcoming/due payments
+      if (installmentPlan.status === InstallmentStatus.ACTIVE || installmentPlan.status === InstallmentStatus.PENDING) {
         if (daysUntilDue === 5) {
           const emailHtml = upcomingPaymentReminder({
             firstName: customer.name.split(' ')[0],
@@ -196,7 +213,6 @@ export const sendPaymentReminders = async () => {
             subject: 'Your Installment Payment is Due Soon!',
             html: emailHtml
           });
-
         } else if (daysUntilDue === 0) {
           const emailHtml = onDuePaymentReminder({
             firstName: customer.name.split(' ')[0],

@@ -41,14 +41,14 @@ export const upcomingPaymentReminder = (options: UpcomingPaymentOptions): string
             </div>
             <div class="content">
                 <p>Hello ${options.firstName},</p>
-                <p>Just a friendly reminder that your next installment payment of <strong>${formattedAmount}</strong> for your **${options.carDetails}** purchase is due in <strong>5 days</strong> on **${formattedDueDate}**.</p>
+                <p>Just a friendly reminder that your next installment payment of <strong>${formattedAmount}</strong> for your <strong>${options.carDetails}</strong> purchase is due in <strong>5 days</strong> on <strong>${formattedDueDate}</strong>.</p>
                 <p>To avoid any delays, please ensure your payment is completed on or before the due date. You can make your payment by logging into your account and visiting the payments section.</p>
                 <p>Thank you for your timely payments.</p>
                 <a href="${options.paymentLink}" class="button">Make a Payment</a>
-                <p>Best regards,<br>The **${options.companyName}** Team</p>
+                <p>Best regards,<br>The <strong>>options.companyName}</strong> Team</p>
             </div>
             <div class="footer">
-                <p>&copy; ${new Date().getFullYear()} **${options.companyName}**. All rights reserved.</p>
+                <p>&copy; ${new Date().getFullYear()} <strong>${options.companyName}</strong>. All rights reserved.</p>
             </div>
         </div>
     </body>

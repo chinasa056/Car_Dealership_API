@@ -46,15 +46,15 @@ export const overduePaymentNotification = (options: OverduePaymentOptions): stri
             </div>
             <div class="content">
                 <p>Hello ${options.firstName},</p>
-                <p>Our records show that your installment payment of **${formattedOriginalAmount}** for your **${options.carDetails}** is now **7 days overdue**.</p>
-                <p>As per our policy, a penalty of **${formattedPenaltyAmount}** has been applied to your outstanding balance. Your new payment amount is **${formattedNewTotalAmount}**.</p>
+                <p>Our records show that your installment payment of <strong>${formattedOriginalAmount}</strong> for your <strong>${options.carDetails}</strong> is now <strong>7 days overdue</strong>.</p>
+                <p>As per our policy, a penalty of <strong>${formattedPenaltyAmount}</strong> has been applied to your outstanding balance month. Your new payment amount for this month is <strong>${formattedNewTotalAmount}</strong>.</p>
                 <p>To prevent your purchase from being marked as defaulted, please make the payment immediately by clicking the button below.</p>
                 <a href="${options.paymentLink}" class="button">Pay Now</a>
                 <p>If you have any questions, please reply to this email.</p>
-                <p>Best regards,<br>The **${options.companyName}** Team</p>
+                <p>Best regards,<br>The <strong>${options.companyName}</strong> Team</p>
             </div>
             <div class="footer">
-                <p>&copy; ${new Date().getFullYear()} **${options.companyName}**. All rights reserved.</p>
+                <p>&copy; ${new Date().getFullYear()} <strong>${options.companyName}</strong>. All rights reserved.</p>
             </div>
         </div>
     </body>

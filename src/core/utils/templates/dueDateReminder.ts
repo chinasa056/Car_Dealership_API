@@ -43,7 +43,7 @@ export const onDuePaymentReminder = (options: OnDuePaymentOptions): string => {
             </div>
             <div class="content">
                 <p>Hello ${options.firstName},</p>
-                <p>This is a reminder that your installment payment of <strong>${formattedAmount}</strong> for your **${options.carDetails}** is due today, **${formattedDueDate}**.</p>
+                <p>This is a reminder that your installment payment of <strong>${formattedAmount}</strong> for your <strong>${options.carDetails}</strong> is due today, <strong>${formattedDueDate}</strong>.</p>
                 <p>Please log in and complete your payment to keep your plan active and on track.</p>
                 <a href="${options.paymentLink}" class="button">Pay Now</a>
                 <p>If you have already made this payment, please disregard this email.</p>
