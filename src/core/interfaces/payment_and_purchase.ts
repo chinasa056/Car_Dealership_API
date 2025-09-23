@@ -28,6 +28,7 @@ export interface IPayment extends Document {
   reference: string;
   status: "Pending" | "Success" | "Failed";
   paymentType: PaymentOption;
+  refunded: boolean;
   provider: "Paystack";
   createdAt: Date;
 };

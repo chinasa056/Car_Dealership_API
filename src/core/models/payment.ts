@@ -14,6 +14,10 @@ const paymentSchema = new Schema<IPayment>(
       enum: ['Pending', 'Success', 'Failed'],
       default: 'Pending',
     },
+    refunded:{
+        type: Boolean,
+        default: false
+    },
     provider: {
       type: String,
       enum: ['Paystack'],

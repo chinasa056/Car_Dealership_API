@@ -16,6 +16,7 @@ import purchaseRoute from './api/route/purchase';
 import installmentRoute from './api/route/installment'
 import { getRedisClient } from './core/utils/redis';
 import { startPaymentCronJob } from './core/utils/node-cron';
+import refundRouter from './api/route/refund';
 
 const app = express();
 const port = setting.port;
@@ -36,6 +37,7 @@ app.use(`${appVersion}/categories`, categoryRoute);
 app.use(`${appVersion}/cars`, carRoute);
 app.use(`${appVersion}/purchases`, purchaseRoute);
 app.use(`${appVersion}/installments`, installmentRoute);
+app.use(`${appVersion}/refunds`, refundRouter)
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err) {

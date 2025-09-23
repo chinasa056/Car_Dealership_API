@@ -6,7 +6,8 @@ export enum PaymentOption {
 export enum Status {
     PENDING = 'Pending',
     COMPLETED = 'Completed',
-    FAILED = 'Failed'
+    FAILED = 'Failed',
+    SUCCEEDED = 'Succeeded'
 }
 
 export enum InstallmentStatus{

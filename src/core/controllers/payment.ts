@@ -41,7 +41,7 @@ export const processPaymentInitialization = async (
   }
 
   let paystackAmount;
-let installmentPaymentId: Types.ObjectId | null = null;     
+  let installmentPaymentId: Types.ObjectId | null = null;
 
   const paymentOption = purchase.paymentOption;
   if (paymentOption === PaymentOption.FULL_PAYMENT) {
@@ -60,6 +60,14 @@ let installmentPaymentId: Types.ObjectId | null = null;
       );
     }
 
+    if (installmentPlan.status === InstallmentStatus.DEFAULTED) {
+      throw new CustomError(
+        "Payment failed: Installment plan has ended,please request an extension or a refund",
+        ErrorCode.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST
+      );
+    }
+
     const installmentPayment = await InstallmentPayment.findOne({
       installmentPlanId: installmentPlan._id,
       isPaid: false,
@@ -72,8 +80,9 @@ let installmentPaymentId: Types.ObjectId | null = null;
         HttpStatus.NOT_FOUND
       );
     }
+
     paystackAmount = installmentPayment.amount;
-        installmentPaymentId = installmentPayment._id as Types.ObjectId;
+    installmentPaymentId = installmentPlan._id as Types.ObjectId;
   } else {
     throw new CustomError(
       "Invalid payment option",
@@ -212,6 +221,10 @@ export const verifyPayment = async (
       }
 
       installmentPlan.remainingBalance -= installmentPayment.amount;
+
+      if (installmentPlan.status === InstallmentStatus.DEFAULTED_GRACE_PERIOD) {
+        installmentPlan.status = InstallmentStatus.ACTIVE
+      }
 
       const checkUncompletedPayments = await InstallmentPayment.findOne({
         installmentPlanId: installmentPlan._id,

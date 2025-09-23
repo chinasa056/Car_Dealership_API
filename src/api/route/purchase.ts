@@ -2,24 +2,24 @@
 import { Router } from 'express';
 import { authenticate } from '../middleware/authentication';
 import { asyncHandler } from 'src/core/helpers/asyncHandler';
-import * as RequestHandler from '../requestHandlers/purchase';
+import * as PurchaseHandler from '../requestHandlers/purchase';
 
 const router = Router();
 
 router.post(
   '/:carId',
   authenticate,
-  asyncHandler(RequestHandler.purchaseCar)
+  asyncHandler(PurchaseHandler.purchaseCar)
 );
 
 router.patch('/:id', authenticate,
-  asyncHandler(RequestHandler.viewSinglePurchaseDetail)
+  asyncHandler(PurchaseHandler.viewSinglePurchaseDetail)
 );
 
-router.get('/', authenticate, asyncHandler(RequestHandler.viewAllPurchases));
+router.get('/', authenticate, asyncHandler(PurchaseHandler.viewAllPurchases));
 
 router.patch('/:id/select-payment-option', authenticate,
-  asyncHandler(RequestHandler.selectPaymentOption)
+  asyncHandler(PurchaseHandler.selectPaymentOption)
 );
 
 export default router;

@@ -148,7 +148,7 @@ export const sendPaymentReminders = async () => {
       const daysUntilDue = differenceInDays(payment.nextDueDate, today);
       const paymentLink = `https://wheelcom/payment/${payment._id}`;
 
-      // We check if today's date is after the plan's end date. If so, we mark it as defaulted and send the options email.
+      // check if today's date is after the plan's end date. If so, we mark it as defaulted and send the options email.
       if (today > installmentPlan.endDate && installmentPlan.status !== InstallmentStatus.DEFAULTED) {
         installmentPlan.status = InstallmentStatus.DEFAULTED;
         await installmentPlan.save();
